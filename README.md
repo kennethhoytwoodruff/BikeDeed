@@ -24,11 +24,11 @@ BikeDeed relies heavily on the incredible efforts of https://github.com/nastassi
 4. npm run test (optional)
 5. start ganache on http://localhost:8545 
 6. truffle migrate
-7. truffle exec scripts/populatebikedeed.sh
-8. truffle exec scripts/displaybikes.sh (optional)
+7. truffle exec scripts/populatebikedeed.js
+8. truffle exec scripts/displaybikes.js (optional)
 9. npm run build
 10. npm run server
-11. hit http://localhost:8455 with your browser.
+11. hit http://localhost:8080 with your browser.
 
 ## Tests and mocks
 
