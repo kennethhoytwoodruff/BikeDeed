@@ -44,23 +44,43 @@ window.App = {
       var meta;
       let deed = await BikeDeed.deployed();
       let name = await deed.name();
-      var addressTag = document.getElementById("myaddress");
-      addressTag.innerHTML = account;
+
+      var newDiv = document.createElement("div");
+      var link = document.createElement('a');
+      link.setAttribute('href', '');
+      link.setAttribute('width', '600');
+      link.setAttribute('height', '400');
+      link.setAttribute('onmouseover', "showAllBikes()");
+      //link.setAttribute('onclick', "showMyBikes(" + account + ")");
+      //link.innerHTML = account;
+      link.innerHTML = "All Bikes";
+      newDiv.appendChild(link);
+      var addressTag = document.getElementById("mybikes").appendChild(newDiv);
+
+      var newDiv2 = document.createElement("div");
+      var link2 = document.createElement('a');
+      link2.setAttribute('href', '');
+      link2.setAttribute('width', '600');
+      link2.setAttribute('height', '400');
+      link2.setAttribute('onmouseover', "showMyBikes()");
+      //link.setAttribute('onclick', "showMyBikes(" + account + ")");
+      //link.innerHTML = account;
+      link2.innerHTML = "My Bikes";
+      newDiv2.appendChild(link2);
+      var addressTag = document.getElementById("allbikes").appendChild(newDiv2);
+
       var nameTag = document.getElementById("nametag");
       nameTag.innerHTML = name;
-      self.displayBody();
+      self.showAllBikes();
     }
     loadPage();
   },
 
-  displayBody: function() {
-    const listBikes = async () => {
-    BikeDeed.setProvider(web3.currentProvider);
+  showMyBikes: function() {
+    const listMyBikes = async () => {
+      BikeDeed.setProvider(web3.currentProvider);
       let deed = await BikeDeed.deployed();
-      let deedIds = await deed.ids();
-
-      // later only show bikes owned by user.
-      //let deedIds = await deed.deedsOf(account);
+      let deedIds = await deed.deedsOf(account);
 
       const FIELD_NAME  = 0
       const FIELD_SERIAL_NUMBER = 1
@@ -70,6 +90,7 @@ window.App = {
       const FIELD_DATE_CREATED = 5
       const FIELD_DATE_DELETED = 6
 
+      document.getElementById("bikelist").innerHTML="";
       for (let i = 0; i < deedIds.length; i++) {
         var deedId = deedIds[i];
         var bikeDeed = await deed.deeds(deedId);
@@ -93,6 +114,7 @@ window.App = {
         link.setAttribute('width', '600');
         link.setAttribute('height', '400');
         link.setAttribute('onmouseover', "showBikeDetails(" + deedId + ")");
+        link.setAttribute('onmouseout', "clearBikeDetails()");
         link.innerHTML = bikeInfo;
         //document.body.appendChild(link);
         newDiv.appendChild(link);
@@ -100,17 +122,62 @@ window.App = {
         bikeStructs.push(bike)
       }
     }
-    listBikes();
+    listMyBikes();
+  },
+
+  showAllBikes: function() {
+    const showAllBikes = async () => {
+    BikeDeed.setProvider(web3.currentProvider);
+      let deed = await BikeDeed.deployed();
+      let deedIds = await deed.ids();
+
+      const FIELD_NAME  = 0
+      const FIELD_SERIAL_NUMBER = 1
+      const FIELD_MANUFACTURER = 2
+      const FIELD_CUSTODIAN = 3
+      const FIELD_PRICE = 4
+      const FIELD_DATE_CREATED = 5
+      const FIELD_DATE_DELETED = 6
+
+      document.getElementById("bikelist").innerHTML="";
+      for (let i = 0; i < deedIds.length; i++) {
+        var deedId = deedIds[i];
+        var bikeDeed = await deed.deeds(deedId);
+        var owner = await deed.ownerOf(deedId);
+        const bike = {
+            name:  web3.toAscii(bikeDeed[FIELD_NAME]),
+            serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
+            manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]),
+            custodian: bikeDeed[FIELD_CUSTODIAN],
+            price: bikeDeed[FIELD_PRICE],
+            dateCreated: bikeDeed[FIELD_DATE_CREATED],
+            dateDeleted: bikeDeed[FIELD_DATE_DELETED]
+        }
+
+        var newDiv = document.createElement("div");
+        var bikeDescription = bike.serialNumber + " " + bike.manufacturer;
+        //var bikeInfo = document.createTextNode(bike.serialNumber + " " + bike.manufacturer);
+        var bikeInfo = bike.serialNumber + " " + bike.manufacturer;
+        var link = document.createElement('a');
+        link.setAttribute('href', '');
+        link.setAttribute('width', '600');
+        link.setAttribute('height', '400');
+        link.setAttribute('onmouseover', "showBikeDetails(" + deedId + ")");
+        link.setAttribute('onmouseout', "clearBikeDetails()");
+        link.innerHTML = bikeInfo;
+        //document.body.appendChild(link);
+        newDiv.appendChild(link);
+        document.getElementById("bikelist").appendChild(newDiv);
+        bikeStructs.push(bike)
+      }
+    }
+    showAllBikes();
   },
 
   displayDetails: function(deedId) {
     const showDetails = async (deedId) => {
       BikeDeed.setProvider(web3.currentProvider);
       let deed = await BikeDeed.deployed();
-      //let deedIds = await deed.ids();
-
-        //let deedIds = await deed.deedsOf(account);
-        //var deedId = 0;
 
       const FIELD_NAME  = 0
       const FIELD_SERIAL_NUMBER = 1
@@ -121,7 +188,7 @@ window.App = {
       const FIELD_DATE_DELETED = 6
 
       var bikeDeed = await deed.deeds(deedId);
-      var owner = await deed.ownerOf(deedId);
+      var bikeOwner = await deed.ownerOf(deedId);
       const bike = {
         name:  web3.toAscii(bikeDeed[FIELD_NAME]),
         serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
@@ -136,43 +203,37 @@ window.App = {
 
       var serialNumber = document.createElement("div");
       serialNumber.appendChild(document.createTextNode("SerialNumber - " + bike.serialNumber));
-      //document.getElementById("serialNumber").appendChild(serialNumber);
       document.getElementById("bikedetails").appendChild(serialNumber);
 
       var manufacturer = document.createElement("div");
       manufacturer.appendChild(document.createTextNode("Manufacturer - " + bike.manufacturer));
-      //document.getElementById("manufacturer").appendChild(manufacturer);
       document.getElementById("bikedetails").appendChild(manufacturer);
 
-      var custodian = document.createElement("div");
-      custodian.appendChild(document.createTextNode("Owner - " + bike.custodian));
-      //document.getElementById("custodian").appendChild(custodian);
-      document.getElementById("bikedetails").appendChild(custodian);
+      var owner = document.createElement("div");
+      owner.appendChild(document.createTextNode("Owner - " + bikeOwner));
+      document.getElementById("bikedetails").appendChild(owner);
 
       var custodian = document.createElement("div");
       custodian.appendChild(document.createTextNode("Custodian - " + bike.custodian));
-      //document.getElementById("custodian").appendChild(custodian);
       document.getElementById("bikedetails").appendChild(custodian);
 
       var price = document.createElement("div");
       price.appendChild(document.createTextNode("Current Price - " + bike.price));
-      //document.getElementById("price").appendChild(price);
       document.getElementById("bikedetails").appendChild(price);
 
       var dateCreated = document.createElement("div");
       dateCreated.appendChild(document.createTextNode("Date Registered - " + bike.dateCreated));
-      //document.getElementById("dateCreated").appendChild(dateCreated);
       document.getElementById("bikedetails").appendChild(dateCreated);
-
-        /*
-        var dateDeleted = document.createElement("div");
-        dateDeleted.appendChild(document.createTextNode(bike.dateDeleted));
-        //document.getElementById("dateDeleted").appendChild(dateDeleted);
-        document.getElementById("bikedetails").appendChild(dateDeleted);
-        */
 
     }
     showDetails(deedId);
+  },
+
+  clearDetails: function() {
+    const clear = async () => {
+      document.getElementById("bikedetails").innerHTML = "";
+    }
+    clear(); 
   }
 
 };

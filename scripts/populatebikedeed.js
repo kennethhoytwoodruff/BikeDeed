@@ -48,6 +48,11 @@ const populateDeeds = async () => {
     await deed.create(_serialNumber5, _manufacturer5, _owner5, _bikeShop2);
     await deed.create(_serialNumber6, _manufacturer6, _owner6, _bikeShop2);
     await deed.create(_serialNumber7, _manufacturer7, _owner7, _bikeShop2);
+    // Optionally add your bike(s) here.
+    await deed.create("My$3r1AlnuM53R", "Specialized", "0x28b54fa6fbd87ce560484deb6d750d2fff243552", _bikeShop1);
+    await deed.create("MyS3r1AlnuM53R2", "Firenze", "0x28b54fa6fbd87ce560484deb6d750d2fff243552", _bikeShop1);
+	  
+	  
   } catch (error) {
     console.log(error.message);
   }
