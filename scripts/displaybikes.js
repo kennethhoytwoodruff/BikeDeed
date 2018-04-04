@@ -4,9 +4,9 @@ var Web3 = require('web3');
 var provider = new Web3.providers.HttpProvider("http://localhost:8545");
 var contract = require('truffle-contract');
 var BikeDeed = contract(require('../build/contracts/BikeDeed.json'));
+var web3 = new Web3(provider);
 
-var _creator = "0xaE6D99dc7250EdE8711B7a8F9C9C2d7e53d88124";
-//var _creator = "0xBb34A5f2205975e691991A7868744bD344186a7d";
+const _creator = web3.eth.accounts[0];
 
 BikeDeed.setProvider(provider);
 BikeDeed.defaults({from: _creator, gas: 900000 });

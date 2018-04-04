@@ -10,13 +10,25 @@ Its inheriting contract `ERC721Deed.sol` is based on the `ERC721Token` from Open
 
 BikeDeed relies heavily on the incredible efforts of https://github.com/nastassiasachs/ERC721ExampleDeed, https://github.com/Michael-Free/bikechain-ethwaterloo and OpenZeppelin.  Thank you!
 
-## Installation
+## Prerequisites
+1. npm
+2. Truffle
+3. Git
+4. Ganache
+5. A browser with the Metamask plugin
+
+## Dev Installation
 1. git clone https://github.com/kennethhoytwoodruff/BikeDeed.git
-2. npm init
+2. npm install
 3. truffle compile
-4. truffle migrate
-5. npm run build
-6. npm run server
+4. npm run test (optional)
+5. start ganache on http://localhost:8545 
+6. truffle migrate
+7. truffle exec scripts/populatebikedeed.sh
+8. truffle exec scripts/displaybikes.sh (optional)
+9. npm run build
+10. npm run server
+11. hit http://localhost:8455 with your browser.
 
 ## Tests and mocks
 
@@ -25,6 +37,7 @@ The tests and mocks of this repository are based on OpenZeppelin work. The direc
 ## TODO
 1. Searching
 2. Graphics
+3. Remove unused node modules.
 
 
 
