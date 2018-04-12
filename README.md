@@ -8,7 +8,7 @@ Its inheriting contract `ERC721Deed.sol` is based on the `ERC721Token` from Open
 
 ## About this example
 
-BikeDeed relies heavily on the incredible efforts of https://github.com/nastassiasachs/ERC721ExampleDeed, https://github.com/Michael-Free/bikechain-ethwaterloo and OpenZeppelin.  Thank you!
+BikeDeed is a first attempt at building an Ethereum Dapp.  BikeDeed leans heavily on the incredible efforts of https://github.com/nastassiasachs/ERC721ExampleDeed, https://github.com/Michael-Free/bikechain-ethwaterloo and OpenZeppelin.  Thank you!  So far only the Chrome browser is supported.
 
 ## Prerequisites
 1. npm
@@ -35,7 +35,9 @@ BikeDeed relies heavily on the incredible efforts of https://github.com/nastassi
 The tests and mocks of this repository are based on OpenZeppelin work. The directory structure is a result of the decision to install their contracts through EthPM instead of NPM.  To perform unit tests type 'truffle exec tests/test.sh'.
 
 ## TODO
-1. Searching
-2. Metadata via IPFS 
-3. Remove unused node modules.
-4. Registration of Bikes.
+1. Searching of existing Bike deeds.
+2. Editiing existing Bike deeds.
+3. Better IPFS support.
+4. Remove unused Node modules.
+5. Report stolen/lost bike functionality.
+6. Clean up UI and use React.
