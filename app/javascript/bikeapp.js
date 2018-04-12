@@ -29,6 +29,7 @@ window.App = {
 
       accounts = accs;
       account = accounts[0];
+      //alert("using account: " + account);
       self.refreshPage();
     });
   },
@@ -78,6 +79,7 @@ window.App = {
 
   showMyBikes: function() {
     const listMyBikes = async () => {
+      document.getElementById("bikedetails").innerHTML = "";
       BikeDeed.setProvider(web3.currentProvider);
       let deed = await BikeDeed.deployed();
       let deedIds = await deed.deedsOf(account);
@@ -85,10 +87,11 @@ window.App = {
       const FIELD_NAME  = 0
       const FIELD_SERIAL_NUMBER = 1
       const FIELD_MANUFACTURER = 2
-      const FIELD_CUSTODIAN = 3
-      const FIELD_PRICE = 4
-      const FIELD_DATE_CREATED = 5
-      const FIELD_DATE_DELETED = 6
+      const FIELD_IPFS_HASH = 3
+      const FIELD_CUSTODIAN = 4
+      const FIELD_PRICE = 5
+      const FIELD_DATE_CREATED = 6
+      const FIELD_DATE_DELETED = 7
 
       document.getElementById("bikelist").innerHTML="";
       for (let i = 0; i < deedIds.length; i++) {
@@ -99,6 +102,7 @@ window.App = {
             name:  web3.toAscii(bikeDeed[FIELD_NAME]),
             serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
             manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]),
+            ipfsHash: bikeDeed[FIELD_IPFS_HASH],
             custodian: bikeDeed[FIELD_CUSTODIAN],
             price: bikeDeed[FIELD_PRICE],
             dateCreated: bikeDeed[FIELD_DATE_CREATED],
@@ -114,12 +118,11 @@ window.App = {
         link.setAttribute('width', '600');
         link.setAttribute('height', '400');
         link.setAttribute('onmouseover', "showBikeDetails(" + deedId + ")");
-        link.setAttribute('onmouseout', "clearBikeDetails()");
+        //link.setAttribute('onmouseout', "clearBikeDetails()");
         link.innerHTML = bikeInfo;
-        //document.body.appendChild(link);
+        document.body.appendChild(link);
         newDiv.appendChild(link);
         document.getElementById("bikelist").appendChild(newDiv);
-        bikeStructs.push(bike)
       }
     }
     listMyBikes();
@@ -127,6 +130,7 @@ window.App = {
 
   showAllBikes: function() {
     const showAllBikes = async () => {
+    document.getElementById("bikedetails").innerHTML = "";
     BikeDeed.setProvider(web3.currentProvider);
       let deed = await BikeDeed.deployed();
       let deedIds = await deed.ids();
@@ -134,10 +138,11 @@ window.App = {
       const FIELD_NAME  = 0
       const FIELD_SERIAL_NUMBER = 1
       const FIELD_MANUFACTURER = 2
-      const FIELD_CUSTODIAN = 3
-      const FIELD_PRICE = 4
-      const FIELD_DATE_CREATED = 5
-      const FIELD_DATE_DELETED = 6
+      const FIELD_IPFS_HASH = 3
+      const FIELD_CUSTODIAN = 4
+      const FIELD_PRICE = 5
+      const FIELD_DATE_CREATED = 6
+      const FIELD_DATE_DELETED = 7
 
       document.getElementById("bikelist").innerHTML="";
       for (let i = 0; i < deedIds.length; i++) {
@@ -148,6 +153,7 @@ window.App = {
             name:  web3.toAscii(bikeDeed[FIELD_NAME]),
             serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
             manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]),
+            ipfsHash: bikeDeed[FIELD_IPFS_HASH],
             custodian: bikeDeed[FIELD_CUSTODIAN],
             price: bikeDeed[FIELD_PRICE],
             dateCreated: bikeDeed[FIELD_DATE_CREATED],
@@ -163,9 +169,9 @@ window.App = {
         link.setAttribute('width', '600');
         link.setAttribute('height', '400');
         link.setAttribute('onmouseover', "showBikeDetails(" + deedId + ")");
-        link.setAttribute('onmouseout', "clearBikeDetails()");
+        //link.setAttribute('onmouseout', "clearBikeDetails()");
         link.innerHTML = bikeInfo;
-        //document.body.appendChild(link);
+        document.body.appendChild(link);
         newDiv.appendChild(link);
         document.getElementById("bikelist").appendChild(newDiv);
         bikeStructs.push(bike)
@@ -182,17 +188,20 @@ window.App = {
       const FIELD_NAME  = 0
       const FIELD_SERIAL_NUMBER = 1
       const FIELD_MANUFACTURER = 2
-      const FIELD_CUSTODIAN = 3
-      const FIELD_PRICE = 4
-      const FIELD_DATE_CREATED = 5
-      const FIELD_DATE_DELETED = 6
+      const FIELD_IPFS_HASH = 3
+      const FIELD_CUSTODIAN = 4
+      const FIELD_PRICE = 5
+      const FIELD_DATE_CREATED = 6
+      const FIELD_DATE_DELETED = 7
 
       var bikeDeed = await deed.deeds(deedId);
       var bikeOwner = await deed.ownerOf(deedId);
+      var bikeMetaData = await deed.deedUri(deedId);
       const bike = {
         name:  web3.toAscii(bikeDeed[FIELD_NAME]),
         serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
         manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]),
+        ipfsHash: bikeDeed[FIELD_IPFS_HASH],
         custodian: bikeDeed[FIELD_CUSTODIAN],
         price: bikeDeed[FIELD_PRICE],
         dateCreated: bikeDeed[FIELD_DATE_CREATED],
@@ -200,29 +209,38 @@ window.App = {
       }
 
       document.getElementById("bikedetails").innerHTML = "";
+      var metaData = document.createElement("div");
+      var link = document.createElement('a');
+      link.setAttribute('href', '');
+      link.setAttribute('onclick',  "window.open('" + bikeMetaData + "', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes'); return false;");
+      link.setAttribute('width', '600');
+      link.setAttribute('height', '400');
+      link.innerHTML = "IPFS Link";
+      metaData.appendChild(link);
+      document.getElementById("bikedetails").appendChild(metaData);
 
       var serialNumber = document.createElement("div");
-      serialNumber.appendChild(document.createTextNode("SerialNumber - " + bike.serialNumber));
+      serialNumber.appendChild(document.createTextNode("Serial Number - " + bike.serialNumber));
       document.getElementById("bikedetails").appendChild(serialNumber);
 
       var manufacturer = document.createElement("div");
-      manufacturer.appendChild(document.createTextNode("Manufacturer - " + bike.manufacturer));
+      manufacturer.appendChild(document.createTextNode("Manufacturer Code - " + bike.manufacturer));
       document.getElementById("bikedetails").appendChild(manufacturer);
 
       var owner = document.createElement("div");
-      owner.appendChild(document.createTextNode("Owner - " + bikeOwner));
+      owner.appendChild(document.createTextNode("Owner Ethereum Address - " + bikeOwner));
       document.getElementById("bikedetails").appendChild(owner);
 
       var custodian = document.createElement("div");
-      custodian.appendChild(document.createTextNode("Custodian - " + bike.custodian));
+      custodian.appendChild(document.createTextNode("Bike Shop Ethereum Address - " + bike.custodian));
       document.getElementById("bikedetails").appendChild(custodian);
 
       var price = document.createElement("div");
-      price.appendChild(document.createTextNode("Current Price - " + bike.price));
+      price.appendChild(document.createTextNode("Purchase Price (Wei) - " + bike.price));
       document.getElementById("bikedetails").appendChild(price);
 
       var dateCreated = document.createElement("div");
-      dateCreated.appendChild(document.createTextNode("Date Registered - " + bike.dateCreated));
+      dateCreated.appendChild(document.createTextNode("Date Registered - " + new Date(bike.dateCreated*1000)));
       document.getElementById("bikedetails").appendChild(dateCreated);
 
     }
@@ -233,11 +251,24 @@ window.App = {
     const clear = async () => {
       document.getElementById("bikedetails").innerHTML = "";
     }
-    clear(); 
+    clear();
   }
-
 };
 
+  function popup(){
+    var popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.id = 'test';
+    var cancel = document.createElement('div');
+    cancel.className = 'cancel';
+    cancel.innerHTML = 'close';
+    cancel.onclick = function (e) { popup.parentNode.removeChild(popup) };
+    var message = document.createElement('span');
+    message.innerHTML = "This is a test message";
+    popup.appendChild(message);
+    popup.appendChild(cancel);
+    document.body.appendChild(popup);
+}
 
 window.addEventListener('load', function() {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)

@@ -20,7 +20,7 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
   /* Events */
 
   // When a dead is created by the contract owner.
-  event Creation(uint256 indexed id, bytes32 indexed serialNumber, bytes32 indexed manufacturer, address owner, address custodian);
+  event Creation(uint256 indexed id, bytes32 indexed serialNumber, bytes32 indexed manufacturer, string ipfsHash, address owner, address custodian, uint256 price);
 
   // When a deed needs to be removed. The contract owner needs to own the deed in order to be able to destroy it.
   event Destruction(uint256 indexed id);
@@ -33,6 +33,7 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
     bytes32 name;
     bytes32 serialNumber;
     bytes32 manufacturer;
+    string ipfsHash;
     address custodian;
     uint256 price;
     uint256 created;
@@ -56,7 +57,7 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
   uint256 private creationPrice = 0.01 ether;
 
   // The contract owner can change the base URL, in case it becomes necessary. It is needed for Metadata.
-  string public url = "http://BikeBuddy.com/";
+  string public url = "http://ipfs.io/ipfs/";
 
   // ERC-165 Metadata
   bytes4 internal constant INTERFACE_SIGNATURE_ERC165 = // 0x01ffc9a7
@@ -121,7 +122,7 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
 
   function deedUri(uint256 _deedId)
   external view onlyExistingNames(_deedId) returns (string _uri) {
-    _uri = _strConcat(url, _bytes32ToString(deeds[_deedId].name));
+    _uri = _strConcat(url, deeds[_deedId].ipfsHash);
   }
 
   function deedName(uint256 _deedId)
@@ -143,31 +144,34 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
   /* Owner Functions */
 
   // Anyone creates deeds. Newly created deeds are initialised with
-  // a derived name, serialNumber, manufacturer, owner and a custodian.
-  function create(bytes32 _serialNumber, bytes32 _manufacturer, address _owner, address _custodian)
+  // a derived name, serialNumber, manufacturer, owner address, optional custodian address and optional price.
+  function create(bytes32 _serialNumber, bytes32 _manufacturer, string _ipfsHash, address _owner, address _custodian, uint256 _price)
   public noExistingNames(_serialNumber, _manufacturer) {
     bytes32 _name = _buildName(_serialNumber, _manufacturer);
     deedNameExists[_name] = true;
     uint256 deedId = deedIds.length;
     deedIds.push(deedId);
     super._mint(_owner, deedId);
+    if (_price == 0) {
+      _price = creationPrice;
+    }
     deeds[deedId] = Bike({
       name: _name,
       serialNumber: _serialNumber,
       manufacturer: _manufacturer,
+      ipfsHash: _ipfsHash,
       custodian: _custodian,
-      price: creationPrice,
+      price: _price,
       created: now,
       deleted: 0
     });
-    Creation(deedId, _serialNumber, _manufacturer, _owner, _custodian);
+    Creation(deedId, _serialNumber, _manufacturer, _ipfsHash, _owner, _custodian, _price);
   }
 
-  // Deeds can only be burned if the contract owner is also the deed owner. This ensures that the deed owner is reimbursed when the contract owner needs to remove a deed from the contract.
+  // Deeds can only be burned if the contract owner is also the deed owner.
   function destroy(uint256 _deedId)
   public onlyOwner notDeleted(_deedId) {
     // We deliberately let the name stay in use, so that each name remains a unique identifier forever.
-
     // Iterating over an array of IDs is too expensive, so we mark the deed as deleted instead.
     deeds[_deedId].deleted = now;
 

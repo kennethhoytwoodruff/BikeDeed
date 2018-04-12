@@ -6,8 +6,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<script type="text/javascript" src="./node_modules/web3/dist"></script>
-<script type="text/javascript" src="./node_modules/truffle-contract/dist/truffle-contract.min.js"></script>
+<script type="text/javascript" src="./register.js"></script>
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-row-padding img {margin-bottom: 12px}
@@ -33,10 +32,6 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <i class="fa fa-user w3-xxlarge"></i>
     <p>REGISTER</p>
   </a>
-  <a href="bikedetails.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-    <i class="fa fa-search w3-xxlarge"></i>
-    <p>SEARCH</p>
-  </a>
   <a href="report.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <i class="fa fa-eye w3-xxlarge"></i>
     <p>REPORT</p>
@@ -50,18 +45,20 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 <!-- Page Content -->
 <div class="w3-padding-large" id="main">
   <!-- Header/Home -->
-  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
-    <h3 class="w3-padding-16 w3-text-light-grey"><b>Registration</b></h3>
-
+  <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
+    <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
+      <p id="nametag">Bikefoo</p>
+      <div id="status"></div>
   </header>
+
 
   <div class="w3-content w3-justify w3-text-grey w3-padding-30" id="about">
     <!--<hr style="width:200px" class="w3-opacity">-->
 <form id="register" action="register.html">
-<h3 class="w3-padding-16 w3-text-light-grey">Serial Number</h3>
+<h4 class="w3-padding-8 w3-text-light-grey">Serial Number</h4>
 <input type="text" id="serial_number" name="serialno" style="text-transform:uppercase" placeholder="Serial Number">
 <br>
-<h3 class="w3-padding-16 w3-text-light-grey">Manufacturer</h3>
+<h4 class="w3-padding-8 w3-text-light-grey">Manufacturer</h4>
 <select name="manufacturer" id="mfr">
   <option value="000">- Please Select a Bike Manufacturer -</option>
   <option value="A00">A-bike</option>
@@ -449,11 +446,17 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <option value="Z01">Zündapp</option>
 </select>
 <br>
-<h3 class="w3-padding-16 w3-text-light-grey">Current Price</h3>
-<input type="text" id="current_price" name="currentprice"  placeholder="Current Price">
+<h4 class="w3-padding-8 w3-text-light-grey">IPFS Hash</h4>
+<input type="text" id="ipfs_hash" name="ipfsHash" placeholder="IPFS Hash">
+<br>
+<h4 class="w3-padding-8 w3-text-light-grey">Bike Shop Ethereum Address (Optional)</h4>
+<input type="text" id="custodian_address" name="custodianAddress" placeholder="Bike Shop Ethereum Address">
+<br>
+<h4 class="w3-padding-8 w3-text-light-grey">Purchase Price in Wei (Optional)</h4>
+<input type="text" id="purchase_price" name="purchaseprice"  placeholder="Purchase Price (wei)">
 <br>
 <br>
-<button class="w3-padding-16 w3-button w3-black" onclick="window.App.registerBike()">Register</button>
+<button type="button" class="w3-padding-16 w3-button w3-black" onclick="window.App.registerBike()">Register</button>
 </form>
 <p id="demo"></p>
   </div>

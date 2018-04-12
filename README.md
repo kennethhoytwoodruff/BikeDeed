@@ -15,7 +15,7 @@ BikeDeed relies heavily on the incredible efforts of https://github.com/nastassi
 2. Truffle
 3. Git
 4. Ganache
-5. A browser with the Metamask plugin
+5. Chrome browser with Metamask plugin
 
 ## Dev Installation
 1. git clone https://github.com/kennethhoytwoodruff/BikeDeed.git
@@ -28,16 +28,14 @@ BikeDeed relies heavily on the incredible efforts of https://github.com/nastassi
 8. truffle exec scripts/displaybikes.js (optional)
 9. npm run build
 10. npm run server
-11. hit http://localhost:8080 with your browser.
+11. Make sure you have an Internet connection and go to http://localhost:8080 with your browser.
 
 ## Tests and mocks
 
-The tests and mocks of this repository are based on OpenZeppelin work. The directory structure is a result of the decision to install their contracts through EthPM instead of NPM.  To perform unit tests type 'truffle exec tests/test/sh'.
+The tests and mocks of this repository are based on OpenZeppelin work. The directory structure is a result of the decision to install their contracts through EthPM instead of NPM.  To perform unit tests type 'truffle exec tests/test.sh'.
 
 ## TODO
 1. Searching
-2. Graphics
+2. Metadata via IPFS 
 3. Remove unused node modules.
-
-
-
+4. Registration of Bikes.
