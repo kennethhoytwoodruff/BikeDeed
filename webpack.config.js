@@ -3,7 +3,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry:  {
-      bikeapp: __dirname + "/app/javascript/bikeapp.js",
+      bikeappvue: __dirname + "/app/javascript/bikeappvue.js",
+      vue: __dirname + "/app/javascript/vue.js",
       register: __dirname + "/app/javascript/register.js"
     },
 

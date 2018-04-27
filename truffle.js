@@ -1,6 +1,7 @@
 require("babel-register");
 require("babel-polyfill");
 var HDWalletProvider = require("truffle-hdwallet-provider");
+var mnemonic = "upset quantum soccer destroy buffalo alter flush exhaust wait rescue pioneer clip";
 // var infura_apikey = "<key>";
 // var mnemonic = "<bla bla bla>";
 

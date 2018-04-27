@@ -41,7 +41,8 @@ window.App = {
 
   refreshPage: function () {
     const loadPage = async () => {
-      let deed = await BikeDeed.deployed();
+      //let deed = await BikeDeed.deployed();
+      let deed = BikeDeed.at('0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33');
       let name = await deed.name();
       var self = this;
       var nameTag = document.getElementById("nametag");
@@ -57,7 +58,8 @@ window.App = {
 
       BikeDeed.setProvider(web3.currentProvider);
       BikeDeed.defaults({from: account, gas: 900000 });
-      let deed = await BikeDeed.deployed();
+      //let deed = await BikeDeed.deployed();
+      let deed = BikeDeed.at('0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33');
 
       var manufacturer = document.getElementById("mfr").value;
       var serialnumber = document.getElementById("serial_number").value;
