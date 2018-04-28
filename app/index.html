@@ -74,11 +74,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       <p>Serial Number: {{ bikeSerialNumber }}</p>
       <p>Manufacturer: {{ bikeManufacturer }}</p>
       <button class="w3-padding-2 w3-button w3-blue" v-on:click="displayMetaData()">MetaData</button>
-      <!--
-      onclick',  "window.open('" + bikeMetaData + "', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes'); return false;");
-      <a v-bind:href="bikeMetaData">MetaData</a>
-      -->
       <p>Date Created: {{ bikeDateCreated }}</p>
+      <p>Purchase Price: {{ bikePurchasePrice }} Wei</p>
     </template>
   </div>
 

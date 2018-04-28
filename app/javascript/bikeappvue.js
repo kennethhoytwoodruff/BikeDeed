@@ -15,16 +15,18 @@ var app = new Vue({
         nametag: '',
         status: '',
         message: '',
-        amount: '',
         allbikes: [],
         mybikes: [],
         bikelist: [],
         displayDetails: false,
+        // specific to current bike being worked on
         bikeOwner: '',
         bikeSerialNumber: '',
         bikeManufacturer: '',
         bikeIpfsHash: '',
         bikeDateCreated: '',
+        bikePurchasePrice: '',
+        bikeShopAddress: '',
         bikeMetaData: ''
       },
       beforeCreate: function () {
@@ -142,10 +144,50 @@ var app = new Vue({
         this.bikeIpfsHash = bike.ipfsHash;
         this.bikeDateCreated = new Date(bike.dateCreated*1000);
         this.bikeMetaData = bike.metaData;
+        this.bikePurchasePrice = bike.price;
+        this.bikeShopAddress = bike.custodian;
         this.displayDetails = true;
      },
      displayMetaData:function() {
        window.open(this.bikeMetaData, "_blank", "location=yes,height=570,width=520,scrollbars=yes,status=yes");
+     },
+     registerBike: function() {
+       //alert("registering bike")
+       const regBike = async () => {
+         var self = this;
+
+
+         if (this.bikeShopAddress == "") {
+           this.bikeShopAddress = this.userAccount;
+         }
+
+         if (this.bikePurchasePrice == "") {
+           this.bikePurchasePrice = "0";
+         }
+
+         this.status = "Registering bike deed on the blockchain. This may take a while...";
+
+        BikeDeed.defaults({from: this.userAccount, gas: 900000 });
+        let deed = await BikeDeed.at(this.contractAddress);
+
+         try {
+           //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount + " " +  this.bikeShopAddress + " " +  this.bikePurchasePrice);
+           let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount, this.bikeShopAddress, this.bikePurchasePrice);
+         } catch (error) {
+           console.log(error.message);
+           this.status = error.message;
+           alert(error.message);
+           return;
+         }
+         this.status = "Congratulations!  Your bike has been registered on the blockchain.";
+
+         this.bikeSerialNumber = "";
+         this.bikeManufacturer = "000";
+         this.bikeIpfsHash = "";
+         this.bikeShopAddress = "";
+         this.bikePurchasePrice = "";
+       }
+       regBike();
      }
    }
 })
