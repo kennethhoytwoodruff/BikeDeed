@@ -6,7 +6,6 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<script type="text/javascript" src="./bikeapp.js"></script>
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-row-padding img {margin-bottom: 12px}
@@ -18,8 +17,12 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
 </style>
 <body class="w3-black">
-<div id="status"></div>
-<div id="amount"></div>
+<!-- App div -->
+<div id="app">
+  <!--
+<span> {{ status }} </span>
+<span> {{ amount }} </span>
+-->
 <!-- Icon Bar (Sidebar - hidden on small screens) -->
 <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
   <!-- Avatar image in top left corner -->
@@ -32,10 +35,6 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <i class="fa fa-user w3-xxlarge"></i>
     <p>REGISTER</p>
   </a>
-  <a href="bikedetails.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-    <i class="fa fa-search w3-xxlarge"></i>
-    <p>SEARCH</p>
-  </a>
   <a href="report.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <i class="fa fa-eye w3-xxlarge"></i>
     <p>REPORT</p>
@@ -47,20 +46,37 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 </nav>
 
 <!-- Page Content -->
-<div class="w3-padding-large" id="main">
+<div class="w3-padding-large">
   <!-- Header/Home -->
-  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+  <header class="w3-container w3-padding-16 w3-center w3-black">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
-      <p id="nametag">Bikedeed</p>
-      <p id="myaddress"></p>
+      <p>{{ nametag }}</p>
   </header>
 
+  <div class="w3-content w3-center w3-text-blue w3-padding-8">
+    <button class="w3-padding-2 w3-button w3-blue" v-on:click="showMyBikes()">My Bikes</button>
+    <button class="w3-padding-2 w3-button w3-blue" v-on:click="showAllBikes()">All Bikes</button>
+  </div>
+
   <!-- Bike List Section -->
-  <div class="w3-content w3-center w3-text-grey w3-padding-16" id="bikelist">
+  <div class="w3-content w3-center w3-text-grey w3-padding-16">
+    <ul>
+      <li v-for="bike in bikelist">
+      <button class="w3-padding-4 w3-button w3-black" v-on:click="showBikeDetails(bike)">{{ bike.name }}</button>
+      </li>
+    </ul>
   </div>
 
   <!-- Bike Details Section -->
-  <div class="w3-content w3-center w3-text-blue w3-padding-16" id="bikedetails">
+  <div class="w3-content w3-center w3-text-blue w3-padding-8">
+    <template v-if="displayDetails">
+      <p>Owner: {{ bikeOwner }}</p>
+      <p>Serial Number: {{ bikeSerialNumber }}</p>
+      <p>Manufacturer: {{ bikeManufacturer }}</p>
+      <button class="w3-padding-2 w3-button w3-blue" v-on:click="displayMetaData()">MetaData</button>
+      <p>Date Created: {{ bikeDateCreated }}</p>
+      <p>Purchase Price: {{ bikePurchasePrice }} Wei</p>
+    </template>
   </div>
 
 
@@ -72,11 +88,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 <!-- END PAGE CONTENT -->
 </div>
 
-<script>
-function showBikeDetails(deedId) {
-  window.App.displayDetails(deedId);
-}
-</script>
-
+<!-- END App div -->
+</div>
+<script type="text/javascript" src="bikeappvue.js">bikeppvue here</script>
 </body>
 </html>

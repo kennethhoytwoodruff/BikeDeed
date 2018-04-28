@@ -10,30 +10,50 @@ require('chai')
 contract('BikeDeed', accounts => {
   let deed = null;
   const _unknownDeedId = 999;
+
   const _creator = accounts[0];
   const _firstOwner = accounts[1];
   const _secondOwner = accounts[2];
   const _thirdOwner = accounts[3];
   const _unrelatedAddr = accounts[4];
   const _bikeShop = accounts[5];
-  const _manufacturer1 = "Specialized";
-  const _manufacturer2 = "Moots";
-  const _manufacturer3 = "Santa Cruz";
+
   const _serialNumber1 = "WSBC973528365"
   const _serialNumber2 = "M1024"
   const _serialNumber3 = "LTS7300927"
   const _deletedSerialNumber = "LTS4530957"
+
+  const _manufacturer1 = "S25"; //"Specialized";
+  const _manufacturer2 = "M20"; //"Moots Cycles";
+  const _manufacturer3 = "S02"; //"Santa Cruz Bicycles";
+
+
+  const _deedUrl = "http://ipfs.io/ipfs/";
+
+  const _ipfsHash1 = "QmTsx8byxDXaZV5pcNsaoctctibJqm5H3jmZ6XeSgH2RRD";
+  const _ipfsHash2 = "QmPB7wCgU35yt2uJ1ynsEYM9jQxLnYDAPEjpZoVWCV7yqj";
+  const _ipfsHash3 = "QmcY3N16r4GSNkgJPJiQjKxYVTrB27yzqPAgVonqVpMq5r";
+  const _ipfsHash4 = "QmeJ7qTAuViHztHs1RqGHvAgRtnJwQfEu1Kjt5hWbPJVfj";
+
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+  // Price in ether
+  const _price1 = 1.0;
+  const _price2 = .01;
+  const _price3 = .0001;
+  const _price4 = 10.01;
 
   beforeEach(async function () {
     deed = await BikeDeed.new({ from: _creator });
-    await deed.create(_serialNumber1, _manufacturer1, _firstOwner, _bikeShop);
-    await deed.create(_serialNumber2, _manufacturer2, _secondOwner, _bikeShop);
-    await deed.create(_serialNumber3, _manufacturer3, _secondOwner, _bikeShop);
-    await deed.create(_deletedSerialNumber, _manufacturer3, _creator, _bikeShop);
+    deed.setUrl(_deedUrl);
+    await deed.create(_serialNumber1, _manufacturer1, _ipfsHash1, _firstOwner, _bikeShop, _price1);
+    await deed.create(_serialNumber2, _manufacturer2, _ipfsHash2, _secondOwner, _bikeShop, _price2);
+    await deed.create(_serialNumber3, _manufacturer3, _ipfsHash3, _secondOwner, _bikeShop, _price3);
+    await deed.create(_deletedSerialNumber, _manufacturer3, _ipfsHash4, _creator, _bikeShop, _price4);
   });
 
   describe('verify', function () {
+
     describe('verifyOwnerOf', function () {
       it('verify deed creation', async function () {
         let owner1 = await deed.ownerOf(0);
@@ -42,6 +62,17 @@ contract('BikeDeed', accounts => {
         assert.equal(owner2, _secondOwner);
         let owner3 = await deed.ownerOf(2);
         assert.equal(owner3, _secondOwner);
+        });
+      });
+
+    describe('verifyIpfsHash', function () {
+      it('verify ipfsHash existence', async function () {
+        let ipfs1 = await deed.deedUri(0);
+        assert.equal(ipfs1, (_deedUrl + _ipfsHash1));
+        let ipfs2 = await deed.deedUri(1);
+        assert.equal(ipfs2, (_deedUrl + _ipfsHash2));
+        let ipfs3 = await deed.deedUri(2);
+        assert.equal(ipfs3, (_deedUrl + _ipfsHash3));
         });
       });
 
@@ -54,10 +85,12 @@ contract('BikeDeed', accounts => {
 
     describe('verifyNames', function () {
       it('verify name of deeds', async function () {
-        let name1 = await deed.name();
-        console.log(name1);
-        let name2 = await deed.deedName(2);
-        console.log(name2);
+        let name1 = await deed.deedName(0);
+        assert.equal(name1, (_serialNumber1 + _manufacturer1));
+        let name2 = await deed.deedName(1);
+        assert.equal(name2, (_serialNumber2 + _manufacturer2));
+        let name3 = await deed.deedName(2);
+        assert.equal(name3, (_serialNumber3 + _manufacturer3));
         });
       });
     });
