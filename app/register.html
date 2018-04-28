@@ -6,9 +6,6 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<!--
-<script type="text/javascript" src="./register.js"></script>
--->
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-row-padding img {margin-bottom: 12px}
@@ -53,15 +50,23 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       <p>{{ status }}</p>
   </header>
 
-
   <div class="w3-content w3-justify w3-text-grey w3-padding-30" id="about">
     <!--<hr style="width:200px" class="w3-opacity">-->
 <form id="register" action="register.html">
 <h4 class="w3-padding-8 w3-text-light-grey">Serial Number</h4>
-<input type="text" id="serial_number" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Serial Number">
+<input type="text" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Serial Number">
 <br>
 <h4 class="w3-padding-8 w3-text-light-grey">Manufacturer</h4>
-<select name="manufacturer" id="mfr" v-model="bikeManufacturer">
+
+<select v-model="bikeManufacturer">
+  <option value="000">- Please Select a Bike Manufacturer -</option>
+  <option v-for="manufacturer in manufacturers" v-bind:value="manufacturer.value">
+    {{ manufacturer.text }}
+  </option>
+</select>
+
+<!--
+<select name="bikeManufacturer" id="bikeManufacturer" v-model="bikeManufacturer">
   <option value="000">- Please Select a Bike Manufacturer -</option>
   <option value="A00">A-bike</option>
   <option value="A01">Abici</option>
@@ -447,6 +452,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <option value="Z00">Zigo</option>
   <option value="Z01">Zündapp</option>
 </select>
+-->
 <br>
 <h4 class="w3-padding-8 w3-text-light-grey">IPFS Hash</h4>
 <input type="text" v-model="bikeIpfsHash" name="ipfsHash" placeholder="IPFS Hash">

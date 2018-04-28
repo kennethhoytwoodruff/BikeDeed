@@ -2,6 +2,7 @@
 import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
 import Vue from './vue'
+import bikemanufacturersfromfile from './bikemanufacturers.json'
 
 var BikeDeed = contract(require('../../build/contracts/BikeDeed.json'));
 
@@ -18,8 +19,10 @@ var app = new Vue({
         allbikes: [],
         mybikes: [],
         bikelist: [],
+        manufacturers: [],
+        // display controls
         displayDetails: false,
-        // specific to current bike being worked on
+        // specific bike details
         bikeOwner: '',
         bikeSerialNumber: '',
         bikeManufacturer: '',
@@ -44,6 +47,7 @@ var app = new Vue({
         this.initAccounts();
         this.initContract();
         this.loadAllBikes();
+        this.initManufacturers();
       },
       beforeUpdate:function(){
         console.log("beforeUpdate...");
@@ -121,6 +125,9 @@ var app = new Vue({
         loadBikes();
         this.bikelist = this.allbikes;
         this.displayDetails = false;
+      },
+      initManufacturers: function() {
+         this.manufacturers = bikemanufacturersfromfile;
       },
       showMyBikes:function() {
         for (let index = 0; index < this.allbikes.length; ++index) {
