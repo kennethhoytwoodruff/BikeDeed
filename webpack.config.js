@@ -5,7 +5,6 @@ module.exports = {
     entry:  {
       bikeappvue: __dirname + "/app/javascript/bikeappvue.js",
       vue: __dirname + "/app/javascript/vue.js",
-      register: __dirname + "/app/javascript/register.js"
     },
 
     output: {
