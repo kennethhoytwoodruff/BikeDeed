@@ -23,7 +23,7 @@ const _ipfs3 = "QmPB7wCgU35yt2uJ1ynsEYM9jQxLnYDAPEjpZoVWCV7yqj";
 const _ipfs4 = "QmcY3N16r4GSNkgJPJiQjKxYVTrB27yzqPAgVonqVpMq5r";
 const _ipfs5 = "QmeJ7qTAuViHztHs1RqGHvAgRtnJwQfEu1Kjt5hWbPJVfj";
 const _ipfs6 = "QmT8CqNEbpv11hFQxjYzEzd4qRk5nCGhNTkoVeVSmz9UdW";
-const _ipfs7 = "QmaoRCweKNLfdnv8sQz9v9fyZ3AsPCT9m2PBdWSWtHkzhM ";
+const _ipfs7 = "QmaoRCweKNLfdnv8sQz9v9fyZ3AsPCT9m2PBdWSWtHkzhM";
 const _ipfs8 = "QmRgCm6EBtqSeCNKboZYH7NhncdpD7nKheYJR8NDX8rCqw";
 
 const _manufacturer1 = "S25"; //"Specialized";

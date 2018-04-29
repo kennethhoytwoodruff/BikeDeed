@@ -48,6 +48,7 @@ var app = new Vue({
         this.initContract();
         this.loadAllBikes();
         this.initManufacturers();
+        alert("performed mounted functions");
       },
       beforeUpdate:function(){
         console.log("beforeUpdate...");
@@ -130,6 +131,7 @@ var app = new Vue({
          this.manufacturers = bikemanufacturersfromfile;
       },
       showMyBikes:function() {
+        this.initAccounts();
         for (let index = 0; index < this.allbikes.length; ++index) {
           let bike = this.allbikes[index];
           if (bike.owner == this.userAccount) {
@@ -160,23 +162,12 @@ var app = new Vue({
      },
      registerBike: function() {
        //alert("registering bike")
-       const regBike = async () => {
+       const registerBikeOnBlockchain = async () => {
          var self = this;
-
-
-         if (this.bikeShopAddress == "") {
-           this.bikeShopAddress = this.userAccount;
-         }
-
-         if (this.bikePurchasePrice == "") {
-           this.bikePurchasePrice = "0";
-         }
+         BikeDeed.defaults({from: this.userAccount, gas: 900000 });
+         let deed = await BikeDeed.at(this.contractAddress);
 
          this.status = "Registering bike deed on the blockchain. This may take a while...";
-
-        BikeDeed.defaults({from: this.userAccount, gas: 900000 });
-        let deed = await BikeDeed.at(this.contractAddress);
-
          try {
            //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount + " " +  this.bikeShopAddress + " " +  this.bikePurchasePrice);
            let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount, this.bikeShopAddress, this.bikePurchasePrice);
@@ -184,17 +175,27 @@ var app = new Vue({
            console.log(error.message);
            this.status = error.message;
            alert(error.message);
-           return;
+           return false;
          }
          this.status = "Congratulations!  Your bike has been registered on the blockchain.";
-
-         this.bikeSerialNumber = "";
-         this.bikeManufacturer = "000";
-         this.bikeIpfsHash = "";
-         this.bikeShopAddress = "";
-         this.bikePurchasePrice = "";
+         return true;
        }
-       regBike();
+
+       if (this.bikeShopAddress == "") {
+         this.bikeShopAddress = this.userAccount;
+       }
+
+       if (this.bikePurchasePrice == "") {
+         this.bikePurchasePrice = "0";
+       }
+
+       // Not sure why this has to be done.
+       this.initAccounts();
+
+       // TODO: form validation prior to registration
+       if (!registerBikeOnBlockchain()) {
+         return;
+       }
      }
    }
 })
