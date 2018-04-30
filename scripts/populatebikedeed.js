@@ -14,8 +14,6 @@ const _owner4 = web3.eth.accounts[4];
 const _owner5 = web3.eth.accounts[5];
 const _owner6 = web3.eth.accounts[6];
 const _owner7 = web3.eth.accounts[7];
-const _bikeShop1 = web3.eth.accounts[8];
-const _bikeShop2 = web3.eth.accounts[9];
 
 const _ipfs1 = "QmapmkuG84mVjWbLgoPWfZpJvFR1d6tQ8B8u1NnNAnb9vz";
 const _ipfs2 = "QmTsx8byxDXaZV5pcNsaoctctibJqm5H3jmZ6XeSgH2RRD";
@@ -59,16 +57,16 @@ const populateDeeds = async () => {
 
   try {
     // These will appear when you click the "All Bikes" link or when the index.html first loads.
-    await deed.create(_serialNumber1, _manufacturer1, _ipfs1, _owner1, _bikeShop1, _price1);
-    await deed.create(_serialNumber2, _manufacturer2, _ipfs2, _owner2, _bikeShop1, _price2);
-    await deed.create(_serialNumber3, _manufacturer3, _ipfs3, _owner3, _bikeShop1, _price3);
-    await deed.create(_serialNumber4, _manufacturer4, _ipfs4, _owner4, _bikeShop1, _price4);
-    await deed.create(_serialNumber5, _manufacturer5, _ipfs5, _owner5, _bikeShop2, _price5);
-    await deed.create(_serialNumber6, _manufacturer6, _ipfs6, _owner6, _bikeShop2, _price6);
-    await deed.create(_serialNumber7, _manufacturer7, _ipfs7, _owner7, _bikeShop2, 0);
+    await deed.create(_serialNumber1, _manufacturer1, _ipfs1, _owner1);
+    await deed.create(_serialNumber2, _manufacturer2, _ipfs2, _owner2);
+    await deed.create(_serialNumber3, _manufacturer3, _ipfs3, _owner3);
+    await deed.create(_serialNumber4, _manufacturer4, _ipfs4, _owner4);
+    await deed.create(_serialNumber5, _manufacturer5, _ipfs5, _owner5);
+    await deed.create(_serialNumber6, _manufacturer6, _ipfs6, _owner6);
+    await deed.create(_serialNumber7, _manufacturer7, _ipfs7, _owner7);
     // Optionally add your PERSONAL bike(s) here, so the "My Bikes" link will work.
-    await deed.create("My$3r1AlnuM53R", "S25", _ipfs8, "0x28b54fa6fbd87ce560484deb6d750d2fff243552", _bikeShop1, _price1);
-    await deed.create("MyS3r1AlnuM53R2", "F05", _ipfs1, "0x28b54fa6fbd87ce560484deb6d750d2fff243552", _bikeShop1, _price2);
+    await deed.create("My$3r1AlnuM53R", "S25", _ipfs8, "0x28b54fa6fbd87ce560484deb6d750d2fff243552");
+    await deed.create("MyS3r1AlnuM53R2", "F05", _ipfs1, "0x28b54fa6fbd87ce560484deb6d750d2fff243552");
 
 
   } catch (error) {

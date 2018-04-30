@@ -62,25 +62,15 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <div v-for="bike in bikelist" class="w3-content w3-center w3-text-grey w3-padding-4">
       <button class="w3-padding-4 w3-button w3-black" v-on:click="showBikeDetails(bike)">{{ bike.name }}</button>
   </div>
-  <!--
-  <div class="w3-content w3-center w3-text-grey w3-padding-16">
-    <ul>
-      <li v-for="bike in bikelist">
-      <button class="w3-padding-4 w3-button w3-black" v-on:click="showBikeDetails(bike)">{{ bike.name }}</button>
-      </li>
-    </ul>
-  </div>
-  -->
 
   <!-- Bike Details Section -->
-  <div class="w3-content w3-center w3-text-blue w3-padding-8">
+  <div class="w3-content w3-center w3-text-blue w3-padding-4">
     <template v-if="displayDetails">
       <p>Owner: {{ bikeOwner }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
       <p>Manufacturer: {{ bikeManufacturer }}</p>
       <button class="w3-padding-2 w3-button w3-blue" v-on:click="displayMetaData()">MetaData</button>
       <p>Date Created: {{ bikeDateCreated }}</p>
-      <p>Purchase Price: {{ bikePurchasePrice }} Wei</p>
     </template>
   </div>
 

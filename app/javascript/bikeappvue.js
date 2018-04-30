@@ -28,8 +28,6 @@ var app = new Vue({
         bikeManufacturer: '',
         bikeIpfsHash: '',
         bikeDateCreated: '',
-        bikePurchasePrice: '',
-        bikeShopAddress: '',
         bikeMetaData: ''
       },
       beforeCreate: function () {
@@ -98,10 +96,8 @@ var app = new Vue({
             const FIELD_SERIAL_NUMBER = 1
             const FIELD_MANUFACTURER = 2
             const FIELD_IPFS_HASH = 3
-            const FIELD_CUSTODIAN = 4
-            const FIELD_PRICE = 5
-            const FIELD_DATE_CREATED = 6
-            const FIELD_DATE_DELETED = 7
+            const FIELD_DATE_CREATED = 4
+            const FIELD_DATE_DELETED = 5
 
             for (let i = 0; i < deedIds.length; i++) {
               var deedId = deedIds[i];
@@ -113,8 +109,6 @@ var app = new Vue({
                 serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
                 manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]),
                 ipfsHash: bikeDeed[FIELD_IPFS_HASH],
-                custodian: bikeDeed[FIELD_CUSTODIAN],
-                price: bikeDeed[FIELD_PRICE],
                 dateCreated: bikeDeed[FIELD_DATE_CREATED],
                 dateDeleted: bikeDeed[FIELD_DATE_DELETED],
                 owner: bikeOwner,
@@ -153,8 +147,6 @@ var app = new Vue({
         this.bikeIpfsHash = bike.ipfsHash;
         this.bikeDateCreated = new Date(bike.dateCreated*1000);
         this.bikeMetaData = bike.metaData;
-        this.bikePurchasePrice = bike.price;
-        this.bikeShopAddress = bike.custodian;
         this.displayDetails = true;
      },
      displayMetaData:function() {
@@ -169,8 +161,8 @@ var app = new Vue({
 
          this.status = "Registering bike deed on the blockchain. This may take a while...";
          try {
-           //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount + " " +  this.bikeShopAddress + " " +  this.bikePurchasePrice);
-           let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount, this.bikeShopAddress, this.bikePurchasePrice);
+           //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
+           let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount);
          } catch (error) {
            console.log(error.message);
            this.status = error.message;
@@ -179,14 +171,6 @@ var app = new Vue({
          }
          this.status = "Congratulations!  Your bike has been registered on the blockchain.";
          return true;
-       }
-
-       if (this.bikeShopAddress == "") {
-         this.bikeShopAddress = this.userAccount;
-       }
-
-       if (this.bikePurchasePrice == "") {
-         this.bikePurchasePrice = "0";
        }
 
        // Not sure why this has to be done.
