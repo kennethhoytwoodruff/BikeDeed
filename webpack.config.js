@@ -5,7 +5,6 @@ module.exports = {
     entry:  {
       bikeappvue: __dirname + "/app/javascript/bikeappvue.js",
       vue: __dirname + "/app/javascript/vue.js",
-      register: __dirname + "/app/javascript/register.js"
     },
 
     output: {
@@ -14,21 +13,11 @@ module.exports = {
       filename: "[name].js"
     },
   //},
-  plugins: [
-    // Copy our app's index.html to the build folder.
-    new CopyWebpackPlugin([
-      { from: './app/index.html', to: "index.html" },
-      { from: './app/register.html', to: "register.html" },
-      { from: './app/report.html', to: "report.html" },
-      { from: './app/contact.html', to: "contact.html" },
-      { from: './app/chainlink.png', to: "chainlink.png" }
-    ])
-  ],
   module: {
     rules: [
       {
        test: /\.css$/,
-       use: [ 'style-loader', 'css-loader' ]
+       loader: [ 'style-loader', 'css-loader' ]
       }
     ],
     rules: [
@@ -42,5 +31,15 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    // Copy our app's index.html to the build folder.
+    new CopyWebpackPlugin([
+      { from: './app/index.html', to: "index.html" },
+      { from: './app/register.html', to: "register.html" },
+      { from: './app/contact.html', to: "contact.html" },
+      { from: './app/proofofownership.png', to: "proofofownership.png" },
+      { from: './app/chainlink.png', to: "chainlink.png" }
+    ])
+  ],
 }

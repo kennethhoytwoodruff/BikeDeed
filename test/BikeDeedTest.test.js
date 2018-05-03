@@ -16,7 +16,6 @@ contract('BikeDeed', accounts => {
   const _secondOwner = accounts[2];
   const _thirdOwner = accounts[3];
   const _unrelatedAddr = accounts[4];
-  const _bikeShop = accounts[5];
 
   const _serialNumber1 = "WSBC973528365"
   const _serialNumber2 = "M1024"
@@ -37,19 +36,13 @@ contract('BikeDeed', accounts => {
 
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-  // Price in ether
-  const _price1 = 1.0;
-  const _price2 = .01;
-  const _price3 = .0001;
-  const _price4 = 10.01;
-
   beforeEach(async function () {
     deed = await BikeDeed.new({ from: _creator });
     deed.setUrl(_deedUrl);
-    await deed.create(_serialNumber1, _manufacturer1, _ipfsHash1, _firstOwner, _bikeShop, _price1);
-    await deed.create(_serialNumber2, _manufacturer2, _ipfsHash2, _secondOwner, _bikeShop, _price2);
-    await deed.create(_serialNumber3, _manufacturer3, _ipfsHash3, _secondOwner, _bikeShop, _price3);
-    await deed.create(_deletedSerialNumber, _manufacturer3, _ipfsHash4, _creator, _bikeShop, _price4);
+    await deed.create(_serialNumber1, _manufacturer1, _ipfsHash1, _firstOwner);
+    await deed.create(_serialNumber2, _manufacturer2, _ipfsHash2, _secondOwner);
+    await deed.create(_serialNumber3, _manufacturer3, _ipfsHash3, _secondOwner);
+    await deed.create(_deletedSerialNumber, _manufacturer3, _ipfsHash4, _creator);
   });
 
   describe('verify', function () {

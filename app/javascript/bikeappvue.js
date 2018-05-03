@@ -2,15 +2,32 @@
 import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
 import Vue from './vue'
+import bikemanufacturersfromfile from './bikemanufacturers.json'
+import VModal from 'vue-js-modal'
+
+Vue.use(VModal, { dynamic: true })
+//import Modal from '../Modal.vue'
 
 var BikeDeed = contract(require('../../build/contracts/BikeDeed.json'));
+
+// register modal component
+Vue.component('modal', {
+  template: '#modal-details-template',
+  methods: {
+    emit: function() {
+			this.$emit('event_child', 1)
+		}
+  }
+})
 
 window.app = app;
 var app = new Vue({
       el: '#app',
       data: {
         // Ropsten address
-        contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
+        //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
+        //contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
+        contractAddress: '0x7d9e9c47c81c0d700b46e5da16183ac0a15517f7',
         userAccount: '',
         nametag: '',
         status: '',
@@ -18,16 +35,16 @@ var app = new Vue({
         allbikes: [],
         mybikes: [],
         bikelist: [],
-        displayDetails: false,
-        // specific to current bike being worked on
+        manufacturers: [],
+        // display controls
+        showDetailsModal: false,
+        // specific bike details
         bikeOwner: '',
         bikeSerialNumber: '',
         bikeManufacturer: '',
         bikeIpfsHash: '',
         bikeDateCreated: '',
-        bikePurchasePrice: '',
-        bikeShopAddress: '',
-        bikeMetaData: ''
+        bikeUrl: ''
       },
       beforeCreate: function () {
         console.log("beforeCreate...");
@@ -44,6 +61,8 @@ var app = new Vue({
         this.initAccounts();
         this.initContract();
         this.loadAllBikes();
+        this.initManufacturers();
+        //alert("performed mounted functions");
       },
       beforeUpdate:function(){
         console.log("beforeUpdate...");
@@ -93,36 +112,35 @@ var app = new Vue({
             const FIELD_SERIAL_NUMBER = 1
             const FIELD_MANUFACTURER = 2
             const FIELD_IPFS_HASH = 3
-            const FIELD_CUSTODIAN = 4
-            const FIELD_PRICE = 5
-            const FIELD_DATE_CREATED = 6
-            const FIELD_DATE_DELETED = 7
+            const FIELD_DATE_CREATED = 4
+            const FIELD_DATE_DELETED = 5
 
             for (let i = 0; i < deedIds.length; i++) {
               var deedId = deedIds[i];
               var bikeDeed = await deed.deeds(deedId);
               var bikeOwner = await deed.ownerOf(deedId);
-              var bikeMetaData = await deed.deedUri(deedId);
+              var url = await deed.deedUri(deedId);
               const bike = {
                 name:  web3.toAscii(bikeDeed[FIELD_NAME]),
                 serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
                 manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]),
                 ipfsHash: bikeDeed[FIELD_IPFS_HASH],
-                custodian: bikeDeed[FIELD_CUSTODIAN],
-                price: bikeDeed[FIELD_PRICE],
                 dateCreated: bikeDeed[FIELD_DATE_CREATED],
                 dateDeleted: bikeDeed[FIELD_DATE_DELETED],
                 owner: bikeOwner,
-                metaData: bikeMetaData
+                bikeUrl: url
              }
              this.allbikes.push(bike);
            }
         }
         loadBikes();
         this.bikelist = this.allbikes;
-        this.displayDetails = false;
+      },
+      initManufacturers: function() {
+         this.manufacturers = bikemanufacturersfromfile;
       },
       showMyBikes:function() {
+        this.initAccounts();
         for (let index = 0; index < this.allbikes.length; ++index) {
           let bike = this.allbikes[index];
           if (bike.owner == this.userAccount) {
@@ -130,12 +148,10 @@ var app = new Vue({
           }
         }
         this.bikelist = this.mybikes;
-        this.displayDetails = false;
       },
       showAllBikes:function() {
         this.mybikes.length = 0;
         this.bikelist = this.allbikes;
-        this.displayDetails = false;
       },
       showBikeDetails:function(bike) {
         this.bikeOwner = bike.owner;
@@ -143,51 +159,82 @@ var app = new Vue({
         this.bikeManufacturer = bike.manufacturer;
         this.bikeIpfsHash = bike.ipfsHash;
         this.bikeDateCreated = new Date(bike.dateCreated*1000);
-        this.bikeMetaData = bike.metaData;
-        this.bikePurchasePrice = bike.price;
-        this.bikeShopAddress = bike.custodian;
-        this.displayDetails = true;
+        this.bikeUrl = bike.url;
+        this.showDetailsModal=true;
      },
      displayMetaData:function() {
-       window.open(this.bikeMetaData, "_blank", "location=yes,height=570,width=520,scrollbars=yes,status=yes");
+       window.open(this.bikeUrl, "_blank", "location=yes,height=570,width=520,scrollbars=yes,status=yes");
+     },
+     confirmRegistration:function() {
+       this.initAccounts();
+       this.showDetailsModal = true;
      },
      registerBike: function() {
-       //alert("registering bike")
-       const regBike = async () => {
+       this.showDetailsModal = false;
+       alert("registering bike")
+       const registerBikeOnBlockchain = async () => {
          var self = this;
-
-
-         if (this.bikeShopAddress == "") {
-           this.bikeShopAddress = this.userAccount;
-         }
-
-         if (this.bikePurchasePrice == "") {
-           this.bikePurchasePrice = "0";
-         }
+         BikeDeed.defaults({from: this.userAccount, gas: 900000 });
+         let deed = await BikeDeed.at(this.contractAddress);
 
          this.status = "Registering bike deed on the blockchain. This may take a while...";
-
-        BikeDeed.defaults({from: this.userAccount, gas: 900000 });
-        let deed = await BikeDeed.at(this.contractAddress);
-
          try {
-           //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount + " " +  this.bikeShopAddress + " " +  this.bikePurchasePrice);
-           let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount, this.bikeShopAddress, this.bikePurchasePrice);
+           alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
+           let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount);
          } catch (error) {
            console.log(error.message);
            this.status = error.message;
            alert(error.message);
-           return;
+           return false;
          }
          this.status = "Congratulations!  Your bike has been registered on the blockchain.";
-
-         this.bikeSerialNumber = "";
-         this.bikeManufacturer = "000";
-         this.bikeIpfsHash = "";
-         this.bikeShopAddress = "";
-         this.bikePurchasePrice = "";
+         return true;
        }
-       regBike();
-     }
-   }
+
+       // Not sure why this has to be done.
+       this.initAccounts();
+
+       // TODO: form validation prior to registration
+       if (!registerBikeOnBlockchain()) {
+         return;
+       }
+     },
+     uploadFileToIpfs:function () {
+        var self = this;
+
+       // since readAsArrayBuffer does not return a Promise, do this.
+       const readUploadedFileAsBuffer = (inputFile) => {
+         const reader = new FileReader();
+         return new Promise((resolve, reject) => {
+           reader.onerror = () => {
+           reader.abort();
+           reject(new DOMException("Problem parsing input file."));
+         };
+         reader.onload = () => {
+           resolve(reader.result);
+         };
+         reader.readAsArrayBuffer(inputFile);
+         });
+       };
+
+       const uploadFile = async () => {
+         const pooFile = document.getElementById("pooFile");
+         const reader = new FileReader();
+         const fileContents = await readUploadedFileAsBuffer(pooFile.files[0]);
+         const ipfs = window.IpfsApi('localhost', 5001) // Connect to IPFS
+         const buf = buffer.Buffer(fileContents) // Convert data into buffer
+         ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
+           var self = this;
+           if(err) {
+             alert(err);
+             console.error(err);
+             return;
+           }
+           this.bikeIpfsHash = result[0].hash;
+           this.bikeUrl = "https://ipfs.io/ipfs/" + this.bikeIpfsHash;
+        });
+      }
+      uploadFile();
+    }
+  }
 })
