@@ -49,8 +49,6 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
   uint256[] private deedIds;
 
 
-  /* Variables in control of owner */
-
   // The contract owner can change the base URL, in case it becomes necessary. It is needed for Metadata.
   string public url = "http://ipfs.io/ipfs/";
 
@@ -70,7 +68,6 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
       bytes4(keccak256('name()')) ^
       bytes4(keccak256('symbol()')) ^
       bytes4(keccak256('deedUri(uint256)'));
-
 
   function BikeDeed() public {}
 
