@@ -43,6 +43,8 @@ The tests and mocks of this repository are based on OpenZeppelin work. The direc
 
 ## TODO
 1. Searching of existing Bike deeds.
-2. Editiing existing Bike deeds.
-3. Remove unused Node modules.
-4. Improve Registration workflow.
+2. Change ownership of existing Bike deeds.
+3. Update Proof of Ownership of existing Bike deeds.
+4. Delete existing Bike deeds.
+5. Remove unused Node modules.
+6. Improve Registration workflow.

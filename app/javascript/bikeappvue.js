@@ -121,9 +121,9 @@ var app = new Vue({
               var bikeOwner = await deed.ownerOf(deedId);
               var url = await deed.deedUri(deedId);
               const bike = {
-                name:  web3.toAscii(bikeDeed[FIELD_NAME]),
-                serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
-                manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]),
+                name:  web3.toAscii(bikeDeed[FIELD_NAME]).replace(/\u0000/g, ''),
+                serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]).replace(/\u0000/g, ''),
+                manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]).replace(/\u0000/g, ''),
                 ipfsHash: bikeDeed[FIELD_IPFS_HASH],
                 dateCreated: bikeDeed[FIELD_DATE_CREATED],
                 dateDeleted: bikeDeed[FIELD_DATE_DELETED],
@@ -135,6 +135,27 @@ var app = new Vue({
         }
         loadBikes();
         this.bikelist = this.allbikes;
+      },
+      lookupManufacturerLabel: function (value1) {
+        var i;
+        for (i = 0; i < this.manufacturers.length; i++) {
+          var value2 = this.manufacturers[i].value;
+          if (value1.trim() == value2.trim()) {
+            return this.manufacturers[i].text;
+          }
+        }
+        return value1;
+      },
+      bikeLabel: function (bike) {
+        var i;
+        for (i = 0; i < this.manufacturers.length; i++) {
+          var value1 = bike.manufacturer;
+          var value2 = this.manufacturers[i].value;
+          if (value1.trim() == value2.trim()) {
+            return this.manufacturers[i].text;
+          }
+        }
+        return value1;
       },
       initManufacturers: function() {
          this.manufacturers = bikemanufacturersfromfile;
@@ -163,7 +184,7 @@ var app = new Vue({
         this.showDetailsModal=true;
      },
      displayMetaData:function() {
-       window.open(this.bikeUrl, "_blank", "location=yes,height=570,width=520,scrollbars=yes,status=yes");
+       window.open(this.bikeUrl, "proofofownershipwindow", "location=yes,height=570,width=520,scrollbars=yes,status=yes");
      },
      confirmRegistration:function() {
        this.initAccounts();
@@ -171,7 +192,7 @@ var app = new Vue({
      },
      registerBike: function() {
        this.showDetailsModal = false;
-       alert("registering bike")
+       //alert("registering bike")
        const registerBikeOnBlockchain = async () => {
          var self = this;
          BikeDeed.defaults({from: this.userAccount, gas: 900000 });
@@ -179,7 +200,7 @@ var app = new Vue({
 
          this.status = "Registering bike deed on the blockchain. This may take a while...";
          try {
-           alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
+           //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
            let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount);
          } catch (error) {
            console.log(error.message);

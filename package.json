@@ -1,7 +1,7 @@
 {
   "name": "erc721-bike-deed",
   "version": "1.0.0",
-  "description": "An example implementation of the ERC721 Deed Standard",
+  "description": "An Bike registration implementation of the ERC721 Deed Standard",
   "main": "truffle.js",
   "directories": {
     "test": "test"

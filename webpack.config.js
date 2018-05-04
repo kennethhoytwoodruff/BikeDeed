@@ -39,7 +39,8 @@ module.exports = {
       { from: './app/register.html', to: "register.html" },
       { from: './app/contact.html', to: "contact.html" },
       { from: './app/proofofownership.png', to: "proofofownership.png" },
-      { from: './app/chainlink.png', to: "chainlink.png" }
+      { from: './app/chainlink.png', to: "chainlink.png" },
+      { from: './app/modal.css', to: "modal.css" }
     ])
   ],
 }

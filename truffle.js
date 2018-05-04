@@ -1,7 +1,8 @@
 require("babel-register");
 require("babel-polyfill");
 var HDWalletProvider = require("truffle-hdwallet-provider");
-var mnemonic = "keep the ether you little bitch you probably really need it";
+//var mnemonic = "keep the ether you little bitch you probably really need it";
+var mnemonic = "upset quantum soccer destroy buffalo alter flush exhaust wait rescue pioneer clip";
 // var infura_apikey = "<key>";
 // var mnemonic = "<bla bla bla>";
 
@@ -17,7 +18,7 @@ module.exports = {
         return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/uHJFDlXprJ52gu4uK9oA")
       },
       network_id: 3,
-      gas: 4712388  
+      gas: 4712388
     }
   }
 };
