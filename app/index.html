@@ -101,7 +101,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       <p>Serial Number: {{ bikeSerialNumber }}</p>
       <p>Owner: {{ bikeOwner }}</p>
       <p>Proof of Ownership</p><img height=42 width=42 src="proofofownership.png" v-on:click="displayMetaData()"></img>
-      <button type="button" class="w3-padding-16 w3-button w3-black" v-on:click="displayMetaData()">{{ bikeIpfsHash }}</button>
+      <button type="button" class="w3-padding-16 w3-button w3-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
       <p>Date Created: {{ bikeDateCreated }}</p>
     </span>
   </modal>

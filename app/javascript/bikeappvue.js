@@ -25,9 +25,9 @@ var app = new Vue({
       el: '#app',
       data: {
         // Ropsten address
-        //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
+        contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
         //contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
-        contractAddress: '0x7d9e9c47c81c0d700b46e5da16183ac0a15517f7',
+        //contractAddress: '0x7d9e9c47c81c0d700b46e5da16183ac0a15517f7',
         userAccount: '',
         nametag: '',
         status: '',
@@ -180,7 +180,7 @@ var app = new Vue({
         this.bikeManufacturer = bike.manufacturer;
         this.bikeIpfsHash = bike.ipfsHash;
         this.bikeDateCreated = new Date(bike.dateCreated*1000);
-        this.bikeUrl = bike.url;
+        this.bikeUrl = bike.bikeUrl;
         this.showDetailsModal=true;
      },
      displayMetaData:function() {
