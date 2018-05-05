@@ -200,8 +200,10 @@ var app = new Vue({
 
          this.status = "Registering bike deed on the blockchain. This may take a while...";
          try {
-           //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
+           alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
            let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount);
+           debugger;
+           alert("foobar");
          } catch (error) {
            console.log(error.message);
            this.status = error.message;
@@ -242,7 +244,7 @@ var app = new Vue({
          const pooFile = document.getElementById("pooFile");
          const reader = new FileReader();
          const fileContents = await readUploadedFileAsBuffer(pooFile.files[0]);
-         const ipfs = window.IpfsApi('localhost', 5001) // Connect to IPFS
+         const ipfs = window.IpfsApi('bikedeed.io', 5001) // Connect to IPFS
          const buf = buffer.Buffer(fileContents) // Convert data into buffer
          ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
            var self = this;

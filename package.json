@@ -55,6 +55,7 @@
     "ethereumjs-wallet": "^0.6.0",
     "ethjs-abi": "^0.2.1",
     "express": "^4.16.3",
+    "http-server": "^0.11.1",
     "truffle-contract": "^3.0.4",
     "truffle-wallet-provider": "0.0.5",
     "vue": "^2.5.16",
