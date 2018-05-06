@@ -33,11 +33,11 @@ BikeDeed is a first attempt at building an Ethereum Dapp.  BikeDeed leans heavil
 11. Make sure you have an Internet connection and go to http://localhost:8080 with your browser.
 
 # configure and start IPFS
-ipfs init
-ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
-ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://localhost:8080"]'
-ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
-ipfs daemon
+1. ipfs init
+2. ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
+3. ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
+4. ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
+5. ipfs daemon
 
 ## Tests and mocks
 
