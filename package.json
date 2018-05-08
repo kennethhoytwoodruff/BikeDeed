@@ -9,7 +9,8 @@
   "scripts": {
     "test": "scripts/test.sh",
     "server": "http-server ./build",
-    "build": "webpack"
+    "build": "webpack --mode production",
+    "build-dev": "webpack-dev-server --mode development --open"
   },
   "author": "Dick Avatar <kennethhoytwoodruff@gmail.com>",
   "repository": {
@@ -43,7 +44,8 @@
     "truffle": "^4.0.6",
     "truffle-hdwallet-provider": "0.0.3",
     "webpack": "^4.4.1",
-    "webpack-cli": "^2.0.13"
+    "webpack-cli": "^2.0.13",
+    "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",

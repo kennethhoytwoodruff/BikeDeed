@@ -25,8 +25,8 @@ var app = new Vue({
       el: '#app',
       data: {
         // Ropsten address
-        contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
-        //contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
+        //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
+        contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
         //contractAddress: '0x7d9e9c47c81c0d700b46e5da16183ac0a15517f7',
         userAccount: '',
         nametag: '',
@@ -38,10 +38,13 @@ var app = new Vue({
         manufacturers: [],
         // display controls
         showDetailsModal: false,
+        bikeManufacturerSelected: false,
+        pooFileLoaded: false,
+        pooFileSelected: false,
         // specific bike details
         bikeOwner: '',
         bikeSerialNumber: '',
-        bikeManufacturer: '',
+        bikeManufacturer: '000', // default
         bikeIpfsHash: '',
         bikeDateCreated: '',
         bikeUrl: ''
@@ -121,8 +124,8 @@ var app = new Vue({
               var bikeOwner = await deed.ownerOf(deedId);
               var url = await deed.deedUri(deedId);
               const bike = {
-                name:  web3.toAscii(bikeDeed[FIELD_NAME]).replace(/\u0000/g, ''),
-                serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]).replace(/\u0000/g, ''),
+                name:  web3.toAscii(bikeDeed[FIELD_NAME]),
+                serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
                 manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]).replace(/\u0000/g, ''),
                 ipfsHash: bikeDeed[FIELD_IPFS_HASH],
                 dateCreated: bikeDeed[FIELD_DATE_CREATED],
@@ -197,13 +200,10 @@ var app = new Vue({
          var self = this;
          BikeDeed.defaults({from: this.userAccount, gas: 900000 });
          let deed = await BikeDeed.at(this.contractAddress);
-
          this.status = "Registering bike deed on the blockchain. This may take a while...";
          try {
-           alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
+           //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
            let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount);
-           debugger;
-           alert("foobar");
          } catch (error) {
            console.log(error.message);
            this.status = error.message;
@@ -211,6 +211,7 @@ var app = new Vue({
            return false;
          }
          this.status = "Congratulations!  Your bike has been registered on the blockchain.";
+         clearRegistrationForm();
          return true;
        }
 
@@ -221,6 +222,22 @@ var app = new Vue({
        if (!registerBikeOnBlockchain()) {
          return;
        }
+     },
+     displayPooExample:function() {
+       window.open("poofileexample.jpg", "poofileexamplewindow", "titlebar=no,location=no,height=570,width=520,scrollbars=yes,status=no");
+     },
+     clearRegistrationForm:function() {
+        this.pooFileSelected = false;
+        this.bikeManufacturer = '000';
+        this.bikeSerialNumber = '';
+        this.bikeIpfsHash = '';
+        this.showDetailsModal = false;
+        this.bikeManufacturerSelected = false;
+        this.pooFileLoaded = false;
+     },
+     pooFileSelectedEvent:function(event) {
+        this.pooFileSelected = true;
+        this.bikeIpfsHash = '';
      },
      uploadFileToIpfs:function () {
         var self = this;
@@ -258,6 +275,7 @@ var app = new Vue({
         });
       }
       uploadFile();
+      this.pooFileLoaded = true;
     }
   }
 })

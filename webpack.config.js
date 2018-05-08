@@ -33,13 +33,14 @@ module.exports = {
     ]
   },
   plugins: [
-    // Copy our app's index.html to the build folder.
     new CopyWebpackPlugin([
       { from: './app/index.html', to: "index.html" },
       { from: './app/register.html', to: "register.html" },
       { from: './app/contact.html', to: "contact.html" },
       { from: './app/proofofownership.png', to: "proofofownership.png" },
       { from: './app/chainlink.png', to: "chainlink.png" },
+      { from: './app/poofileinfo.png', to: "poofileinfo.png" },
+      { from: './app/poofileexample.jpg', to: "poofileexample.jpg" },
       { from: './app/modal.css', to: "modal.css" }
     ])
   ],

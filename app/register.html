@@ -84,16 +84,14 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <!-- Header/Home -->
   <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
-      <p>{{ nametag }}</p>
+      <p>{{ nametag }} <span style=color:red>(Ropsten testnet)</span></p>
+      <p><span style=color:red>Requires Chrome Browser with Metamask Plugin.</span></p>
       <p>{{ status }}</p>
   </header>
 
   <div class="w3-content w3-justify w3-text-grey w3-padding-30" id="about">
     <!--<hr style="width:200px" class="w3-opacity">-->
 <form id="register" action="register.html">
-<h4 class="w3-padding-8 w3-text-light-grey">Serial Number</h4>
-<input type="text" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Serial Number">
-<br>
 <h4 class="w3-padding-8 w3-text-light-grey">Manufacturer</h4>
 
 <select v-model="bikeManufacturer">
@@ -103,15 +101,24 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   </option>
 </select>
 <br>
+<template v-if="bikeManufacturer!='000'">
+<h4 class="w3-padding-8 w3-text-light-grey">Serial Number</h4>
+<input type="text" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Please Enter Serial Number">
+<br>
 
-<h4 class="w3-padding-8 w3-text-light-grey">Provide Proof Of Ownership</h4>
-<input type="file" name="pooFile" id="pooFile">
+<template v-if="bikeSerialNumber!=''">
+<h4 class="w3-padding-8 w3-text-light-grey">Upload Proof Of Ownership</h4>
+<input type="file" name="pooFile" id="pooFile" @change="pooFileSelectedEvent($event)"><img alt="Proof of Ownership Example" style="width:20px" src="poofileinfo.png" v-on:click="displayPooExample()"></img>
+
 <br>
-<button type="button" class="w3-padding-16 w3-button w3-black" v-on:click="uploadFileToIpfs()">Add Proof Of Ownership</button>
+<button v-show="pooFileSelected" type="button" class="w3-padding-16 w3-button w3-black" v-on:click="uploadFileToIpfs()">Push file to IPFS</button>
 <br>
-<button type="button" class="w3-padding-16 w3-button w3-black" v-on:click="displayMetaData()">{{ bikeIpfsHash }}</button>
+<button v-show="pooFileLoaded" type="button" class="w3-padding-16 w3-button w3-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
 <br>
-<button type="button" class="w3-padding-16 w3-button w3-black" v-on:click="confirmRegistration()">Register Bike</button>
+<button v-show="pooFileLoaded" type="button" class="w3-padding-16 w3-button w3-black" v-on:click="confirmRegistration()">Register Bike</button>
+</template>
+</template>
+<button v-show="bikeManufacturer!='000'" type="button" class="w3-padding-16 w3-button w3-black" v-on:click="clearRegistrationForm()">Clear</button>
 </form>
 
 <modal v-on:event_child="registerBike" v-if="showDetailsModal" @close="showDetailsModal = false">
@@ -121,7 +128,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
     <p>Owner: {{ userAccount }}</p>
     <p>Proof of Ownership</p><img height=42 width=42 src="proofofownership.png" v-on:click="displayMetaData()"></img>
-    <button type="button" class="w3-padding-16 w3-button w3-black" v-on:click="displayMetaData()">{{ bikeIpfsHash }}</button>
+    <button type="button" class="w3-padding-16 w3-button w3-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
   </span>
 </modal>
 
