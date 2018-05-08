@@ -1,6 +1,6 @@
 #BikeDeed
 
-`BikeDeed.sol` is an attempt to implement the latest draft of the ERC721 standard.
+`BikeDeed.sol` is an implementation of the latest draft of the ERC721 standard.
 
 A somewhat functional prototype can be found here: http://bikedeed.io (requires Chrome browser with Metamask plugin and a Ropsten Ethereum account with Ether).
 
