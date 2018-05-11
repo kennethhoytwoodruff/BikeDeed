@@ -211,7 +211,7 @@ var app = new Vue({
            return false;
          }
          this.status = "Congratulations!  Your bike has been registered on the blockchain.";
-         clearRegistrationForm();
+         this.clearRegistrationForm();
          return true;
        }
 
