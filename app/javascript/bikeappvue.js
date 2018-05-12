@@ -18,16 +18,28 @@ Vue.component('modal', {
 			this.$emit('event_child', 1)
 		}
   }
-})
+});
+
+// register modal component
+Vue.component('modal2', {
+  template: '#modal-my-details-template',
+  methods: {
+    emit: function() {
+			this.$emit('event_child', 1)
+		}
+  }
+});
 
 window.app = app;
 var app = new Vue({
       el: '#app',
       data: {
-        // Ropsten address
-        //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
+        // Ropsten address???
         contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
-        //contractAddress: '0x7d9e9c47c81c0d700b46e5da16183ac0a15517f7',
+        // Old Ropsten Address
+        //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
+        // Ganache Address???
+        //contractAddress: '0xd6e05e84b369de223ee33cb0cb664879d0a4fdf1',
         userAccount: '',
         nametag: '',
         status: '',
@@ -38,16 +50,22 @@ var app = new Vue({
         manufacturers: [],
         // display controls
         showDetailsModal: false,
+        showMyDetailsModal: false,
         bikeManufacturerSelected: false,
         pooFileLoaded: false,
         pooFileSelected: false,
+        displayRegistrationComponents: true,
         // specific bike details
         bikeOwner: '',
         bikeSerialNumber: '',
+        bikeId: '',
         bikeManufacturer: '000', // default
         bikeIpfsHash: '',
         bikeDateCreated: '',
-        bikeUrl: ''
+        bikeUrl: '',
+        // miscellaneous
+        newOwnerAddress: '',
+        transferOwnershipMessage: ''
       },
       beforeCreate: function () {
         console.log("beforeCreate...");
@@ -124,6 +142,7 @@ var app = new Vue({
               var bikeOwner = await deed.ownerOf(deedId);
               var url = await deed.deedUri(deedId);
               const bike = {
+                id: deedId,
                 name:  web3.toAscii(bikeDeed[FIELD_NAME]),
                 serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
                 manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]).replace(/\u0000/g, ''),
@@ -178,13 +197,23 @@ var app = new Vue({
         this.bikelist = this.allbikes;
       },
       showBikeDetails:function(bike) {
+       // Not sure why this has to be done.
+        this.initAccounts();
+        this.bikeId = bike.id;
         this.bikeOwner = bike.owner;
         this.bikeSerialNumber = bike.serialNumber;
         this.bikeManufacturer = bike.manufacturer;
         this.bikeIpfsHash = bike.ipfsHash;
         this.bikeDateCreated = new Date(bike.dateCreated*1000);
         this.bikeUrl = bike.bikeUrl;
-        this.showDetailsModal=true;
+        if (this.userAccount == bike.owner) {
+          this.showMyDetailsModal=true;
+          this.displayRegistrationComponents=true;
+          this.transferOwnershipMessage = "Transfer to Address:"
+        }
+        else {
+          this.showDetailsModal=true;
+        }
      },
      displayMetaData:function() {
        window.open(this.bikeUrl, "proofofownershipwindow", "location=yes,height=570,width=520,scrollbars=yes,status=yes");
@@ -192,6 +221,42 @@ var app = new Vue({
      confirmRegistration:function() {
        this.initAccounts();
        this.showDetailsModal = true;
+     },
+     transferOwnership: function() {
+       const transfer = async () => {
+         var self = this;
+         BikeDeed.defaults({from: this.userAccount, gas: 900000 });
+         let deed = await BikeDeed.at(this.contractAddress);
+         this.displayRegistrationComponents=false;
+         this.transferOwnershipMessage = "Transferring bike deed to " + this.newOwnerAddress + ". This may take a while...";
+         try {
+           //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
+           let result = await deed.transfer(this.newOwnerAddress, this.bikeId);
+         } catch (error) {
+           console.log(error.message);
+           this.transferOwnershipMessage = error.message;
+           alert(error.message);
+           this.displayRegistrationComponents=true;
+           return true;
+         }
+         this.transferOwnershipMessage = "Congratulations!  Your bike has been transferred to " + this.newOwnerAddress + "!";
+         this.bikeOwner = this.newOwnerAddress;
+         return true;
+       }
+
+       // Not sure why this has to be done.
+       this.initAccounts();
+
+       if (!web3.isAddress(this.newOwnerAddress)) {
+         var errorMsg = "Not a valid address!";
+         console.log(errorMsg);
+         this.transferOwnershipMessage = errorMsg;
+         return true;
+       }
+
+       if (!transfer()) {
+         return true;
+       }
      },
      registerBike: function() {
        this.showDetailsModal = false;
