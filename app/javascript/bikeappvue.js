@@ -35,7 +35,7 @@ var app = new Vue({
       el: '#app',
       data: {
         // Ropsten address???
-        contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
+        contractAddress: '0x8f1143d2dffd8cad8db1d848371e683a33aff37b',
         // Old Ropsten Address
         //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
         // Ganache Address???

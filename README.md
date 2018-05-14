@@ -32,7 +32,7 @@ BikeDeed is a first attempt at building an Ethereum Dapp.  BikeDeed leans heavil
 10. npm run server
 11. Make sure you have an Internet connection and go to http://localhost:8080 with your browser.
 
-# configure and start IPFS
+# Configure and start IPFS
 1. ipfs init
 2. ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
 3. ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
@@ -45,8 +45,11 @@ The tests and mocks of this repository are based on OpenZeppelin work. The direc
 
 ## TODO
 1. Searching of existing Bike deeds.
-2. Change ownership of existing Bike deeds.
-3. Update Proof of Ownership of existing Bike deeds.
-4. Delete existing Bike deeds.
-5. Remove unused Node modules.
-6. Improve Registration workflow.
+2. Update Proof of Ownership of existing Bike deeds - experiment with complex IPFS objects.
+3. Refactor Javascript and Vue js.
+4. Redesign UI for Android/IPhone compatibility.
+5. Delete existing Bike deeds.
+6. Remove unused Node modules.
+7. Improve Registration workflow.
+8. Configure "real" webserver.
+9. Move to the mainnet.
