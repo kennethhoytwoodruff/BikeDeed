@@ -22,6 +22,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
 h4 span { font-size:12px; }
+[v-cloak] > * { display:none; }
+[v-cloak]::before { content: "loading..."; }
 </style>
 <body class="w3-black">
 
@@ -59,7 +61,7 @@ h4 span { font-size:12px; }
   </transition>
 </script>
 
-<div id="app">
+<div id="app" v-cloak>
   <nav class="w3-topnav w3-small w3-center">
     <a href="index.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <p>HOME</p>
@@ -74,18 +76,20 @@ h4 span { font-size:12px; }
   </nav>
 
 <!-- Page Content -->
-<div class="w3-padding-large" id="main">
+<div class="w3-padding-medium" id="main">
   <!-- Header/Home -->
   <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
-      <p>{{ nametag }}</p>
+      <p>BikeDeed</p>
       <p>{{ status }}</p>
   </header>
 
   <div class="w3-content w3-center w3-text-grey w3-padding-30" id="about">
     <!--<hr style="width:200px" class="w3-opacity">-->
 <form id="register" action="register.html">
+  <!--
 <h4 class="w3-padding-8 w3-text-light-grey">Manufacturer</h4>
+-->
 
 <select v-model="bikeManufacturer">
   <option value="000">- Please Select a Bike Manufacturer -</option>
@@ -95,8 +99,8 @@ h4 span { font-size:12px; }
 </select>
 <br>
 <template v-if="bikeManufacturer!='000'">
-<h4 class="w3-padding-8 w3-text-light-grey">Serial Number</h4>
-<input type="text" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Please Enter Serial Number">
+<h4 class="w3-padding-8 w3-text-light-grey"></h4>
+<input type="text" size="40" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Please Enter Serial Number">
 <br>
 
 <template v-if="bikeSerialNumber!=''">

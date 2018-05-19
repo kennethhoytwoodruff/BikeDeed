@@ -16,7 +16,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 #main {margin-left: 120px}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
-
+[v-cloak] > * { display:none; }
+[v-cloak]::before { content: "loading..."; }
 </style>
 <body class="w3-black">
 
@@ -84,7 +85,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
 <!-- App div -->
 
-<div id="app">
+<div id="app" v-cloak>
 <nav class="w3-topnav w3-small w3-center">
   <a href="index.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <p>HOME</p>
@@ -109,7 +110,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <!-- Header/Home -->
   <header class="w3-container w3-padding-16 w3-center w3-black">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
-      <p>{{ nametag }}</p>
+      <p>BikeDeed</p>
   </header>
 
 
@@ -121,6 +122,9 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <modal v-if="showDetailsModal" @close="showDetailsModal=false">
     <h3 slot="header">Bike Details</h3>
     <span slot="body">
+      <!--
+      <p>BikeId: {{ bikeId }}</p>
+    -->
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
       <p>Owner: {{ bikeOwner }}</p>
@@ -133,15 +137,19 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <modal2 v-if="showMyDetailsModal" @close="showMyDetailsModal=false">
     <h3 slot="header">My Bike Details</h3>
     <span slot="body">
+      <!--
+      <p>BikeId: {{ bikeId }}</p>
+    -->
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
       <p>Owner Address: {{ bikeOwner }}</p>
       <p>Proof of Ownership</p><img height=42 width=42 src="proofofownership.png" v-on:click="displayMetaData()"></img>
       <button type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
       <p>Date Created: {{ bikeDateCreated }}</p>
-      <p>{{ transferOwnershipMessage }}</p>
+      <p>{{ processingMessage }}</p>
       <input v-show="displayRegistrationComponents" type="text" id="newOwnerAddress" v-model="newOwnerAddress" :placeholder="bikeOwner">
-      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="transferOwnership()">Transfer</button></p>
+      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="transferOwnership()">Transfer Bike Deed</button></p>
+      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="deleteBikeDeed()">Delete Bike Deed</button></p>
     </span>
 
 

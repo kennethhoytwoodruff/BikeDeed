@@ -38,9 +38,8 @@ var app = new Vue({
         //contractAddress: '0x8f1143d2dffd8cad8db1d848371e683a33aff37b',
         // Old Ropsten Address
         //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
-        contractAddress: '0x68a87eb24bf2de6941d9ea074794ebcc12b5bb36',
         // Ganache Address???
-        //contractAddress: '0xd6e05e84b369de223ee33cb0cb664879d0a4fdf1',
+        contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
         userAccount: '',
         nametag: '',
         status: '',
@@ -66,7 +65,7 @@ var app = new Vue({
         bikeUrl: '',
         // miscellaneous
         newOwnerAddress: '',
-        transferOwnershipMessage: ''
+        processingMessage: ''
       },
       beforeCreate: function () {
         console.log("beforeCreate...");
@@ -126,6 +125,7 @@ var app = new Vue({
         },
         loadAllBikes: function() {
           let self = this;
+          this.allbikes.length=0;
           const loadBikes = async () => {
             let deed = await BikeDeed.at(this.contractAddress);
             let deedIds = await deed.ids();
@@ -140,7 +140,12 @@ var app = new Vue({
             for (let i = 0; i < deedIds.length; i++) {
               var deedId = deedIds[i];
               var bikeDeed = await deed.deeds(deedId);
-              var bikeOwner = await deed.ownerOf(deedId);
+              try {
+                var bikeOwner = await deed.ownerOf(deedId);
+              } catch(error) {
+                // probably a deleted token and therefore has no owner.
+                continue;
+              }
               var url = await deed.deedUri(deedId);
               const bike = {
                 id: deedId,
@@ -210,7 +215,7 @@ var app = new Vue({
         if (this.userAccount == bike.owner) {
           this.showMyDetailsModal=true;
           this.displayRegistrationComponents=true;
-          this.transferOwnershipMessage = "Transfer to Address:"
+          this.processingMessage = "Transfer to Address:"
         }
         else {
           this.showDetailsModal=true;
@@ -223,24 +228,52 @@ var app = new Vue({
        this.initAccounts();
        this.showDetailsModal = true;
      },
+     deleteBikeDeed: function() {
+       const destroyDeed = async () => {
+         var self = this;
+         BikeDeed.defaults({from: this.userAccount, gas: 900000 });
+         let deed = await BikeDeed.at(this.contractAddress);
+         this.processingMessage = "Deleting bike deed. This may take a while...";
+         try {
+           let result = await deed.destroy(this.bikeId);
+         } catch (error) {
+           console.log(error.message);
+           this.processingMessage = error.message;
+           alert(error.message);
+           return;
+         }
+         this.processingMessage = "Congratulations!  Your bike has been deleted!";
+         this.bikeOwner = this.newOwnerAddress;
+         this.displayRegistrationComponents = false;
+         this.initAccounts();
+         this.loadAllBikes();
+       }
+
+       // Not sure why this has to be done.
+       this.initAccounts();
+
+       if (!destroyDeed()) {
+         return;
+       }
+     },
      transferOwnership: function() {
        const transfer = async () => {
          var self = this;
          BikeDeed.defaults({from: this.userAccount, gas: 900000 });
          let deed = await BikeDeed.at(this.contractAddress);
          this.displayRegistrationComponents=false;
-         this.transferOwnershipMessage = "Transferring bike deed to " + this.newOwnerAddress + ". This may take a while...";
+         this.processingMessage = "Transferring bike deed to " + this.newOwnerAddress + ". This may take a while...";
          try {
            //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
            let result = await deed.transfer(this.newOwnerAddress, this.bikeId);
          } catch (error) {
            console.log(error.message);
-           this.transferOwnershipMessage = error.message;
+           this.processingMessage = error.message;
            alert(error.message);
            this.displayRegistrationComponents=true;
            return true;
          }
-         this.transferOwnershipMessage = "Congratulations!  Your bike has been transferred to " + this.newOwnerAddress + "!";
+         this.processingMessage = "Congratulations!  Your bike has been transferred to " + this.newOwnerAddress + "!";
          this.bikeOwner = this.newOwnerAddress;
          return true;
        }
@@ -251,7 +284,7 @@ var app = new Vue({
        if (!web3.isAddress(this.newOwnerAddress)) {
          var errorMsg = "Not a valid address!";
          console.log(errorMsg);
-         this.transferOwnershipMessage = errorMsg;
+         this.processingMessage = errorMsg;
          return true;
        }
 

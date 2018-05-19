@@ -157,7 +157,7 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
 
   // Deeds can only be burned if the contract owner is also the deed owner.
   function destroy(uint256 _deedId)
-  public onlyOwner notDeleted(_deedId) {
+  public onlyOwnerOf(_deedId) notDeleted(_deedId) {
     // We deliberately let the name stay in use, so that each name remains a unique identifier forever.
     // Iterating over an array of IDs is too expensive, so we mark the deed as deleted instead.
     deeds[_deedId].deleted = now;
