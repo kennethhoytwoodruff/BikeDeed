@@ -35,7 +35,7 @@ var app = new Vue({
       el: '#app',
       data: {
         // Ropsten address???
-        //contractAddress: '0x8f1143d2dffd8cad8db1d848371e683a33aff37b',
+        //contractAddress: '0x83f306d638daeedc8895ba5ae6dc6e173195e056',
         // Old Ropsten Address
         //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
         // Ganache Address???
@@ -55,6 +55,7 @@ var app = new Vue({
         pooFileLoaded: false,
         pooFileSelected: false,
         displayRegistrationComponents: true,
+        showSpinner: false,
         // specific bike details
         bikeOwner: '',
         bikeSerialNumber: '',
@@ -158,7 +159,9 @@ var app = new Vue({
                 owner: bikeOwner,
                 bikeUrl: url
              }
-             this.allbikes.push(bike);
+             if (web3.isAddress(bikeOwner)) {
+               this.allbikes.push(bike);
+             }
            }
         }
         loadBikes();
@@ -234,16 +237,22 @@ var app = new Vue({
          BikeDeed.defaults({from: this.userAccount, gas: 900000 });
          let deed = await BikeDeed.at(this.contractAddress);
          this.processingMessage = "Deleting bike deed. This may take a while...";
+         this.showSpinner=true;
+         this.displayRegistrationComponents = false;
+         this.sleep(1000);
          try {
            let result = await deed.destroy(this.bikeId);
          } catch (error) {
            console.log(error.message);
            this.processingMessage = error.message;
            alert(error.message);
+           this.showSpinner=false;
+           this.displayRegistrationComponents = true;
            return;
          }
          this.processingMessage = "Congratulations!  Your bike has been deleted!";
          this.bikeOwner = this.newOwnerAddress;
+         this.showSpinner=false;
          this.displayRegistrationComponents = false;
          this.initAccounts();
          this.loadAllBikes();
@@ -263,6 +272,7 @@ var app = new Vue({
          let deed = await BikeDeed.at(this.contractAddress);
          this.displayRegistrationComponents=false;
          this.processingMessage = "Transferring bike deed to " + this.newOwnerAddress + ". This may take a while...";
+         this.showSpinner = true;
          try {
            //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
            let result = await deed.transfer(this.newOwnerAddress, this.bikeId);
@@ -271,9 +281,11 @@ var app = new Vue({
            this.processingMessage = error.message;
            alert(error.message);
            this.displayRegistrationComponents=true;
+           this.showSpinner = false;
            return true;
          }
          this.processingMessage = "Congratulations!  Your bike has been transferred to " + this.newOwnerAddress + "!";
+         this.showSpinner = false;
          this.bikeOwner = this.newOwnerAddress;
          return true;
        }
@@ -300,16 +312,19 @@ var app = new Vue({
          BikeDeed.defaults({from: this.userAccount, gas: 900000 });
          let deed = await BikeDeed.at(this.contractAddress);
          this.status = "Registering bike deed on the blockchain. This may take a while...";
+         this.showSpinner = true;
          try {
            //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
            let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount);
          } catch (error) {
            console.log(error.message);
            this.status = error.message;
+           this.showSpinner = false;
            alert(error.message);
            return false;
          }
          this.status = "Congratulations!  Your bike has been registered on the blockchain.";
+         this.showSpinner = false;
          this.clearRegistrationForm();
          return true;
        }
@@ -375,6 +390,14 @@ var app = new Vue({
       }
       uploadFile();
       this.pooFileLoaded = true;
+    },
+    sleep:function(milliseconds) {
+      var start = new Date().getTime();
+      for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds){
+          break;
+        }
+      }
     }
   }
 })

@@ -81,7 +81,7 @@ h4 span { font-size:12px; }
   <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
       <p>BikeDeed</p>
-      <p>{{ status }}</p>
+      <p>{{ status }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
   </header>
 
   <div class="w3-content w3-center w3-text-grey w3-padding-30" id="about">
