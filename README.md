@@ -48,8 +48,6 @@ The tests and mocks of this repository are based on OpenZeppelin work. The direc
 2. Update Proof of Ownership of existing Bike deeds - experiment with complex IPFS objects.
 3. Refactor Javascript and Vue js.
 4. Redesign UI for Android/IPhone compatibility.
-5. Delete existing Bike deeds.
-6. Remove unused Node modules.
-7. Improve Registration workflow.
-8. Configure "real" webserver.
-9. Move to the mainnet.
+5. Remove unused Node modules.
+6. Improve Registration workflow.
+7. Move to the mainnet.
