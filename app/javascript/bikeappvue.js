@@ -49,6 +49,7 @@ var app = new Vue({
         bikelist: [],
         manufacturers: [],
         // display controls
+        search: '',
         showDetailsModal: false,
         showMyDetailsModal: false,
         bikeManufacturerSelected: false,
@@ -398,6 +399,15 @@ var app = new Vue({
           break;
         }
       }
+    }
+  },
+  computed: {
+    filteredBikes: function() {
+      return this.bikelist.filter((bike) => {
+        var searchString = this.search.toLowerCase();
+        var label = this.bikeLabel(bike).toLowerCase();
+        return (label.match(searchString) || bike.serialNumber.toLowerCase().match(searchString));
+      });
     }
   }
 })
