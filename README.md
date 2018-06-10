@@ -44,11 +44,11 @@ BikeDeed is a first attempt at building an Ethereum Dapp.  BikeDeed leans heavil
 The tests and mocks of this repository are based on OpenZeppelin work. The directory structure is a result of the decision to install their contracts through EthPM instead of NPM.  To perform unit tests type 'truffle exec tests/test.sh'.
 
 ## TODO
-1. Add Approval functionality
+1. Add Approval functionality.
 2. Update Proof of Ownership of existing Bike deeds - experiment with complex IPFS objects.
 3. Refactor Javascript and Vue js.
 4. Redesign UI for Android/IPhone compatibility.
 5. Remove unused Node modules.
 6. Improve Registration workflow.
 7. Move to the mainnet.
-8. Make BikeDeed use 'Composables'
+8. Make BikeDeed use 'Composables' (ERC-998).
