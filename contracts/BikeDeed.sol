@@ -12,7 +12,7 @@ import "./ERC721Metadata.sol";
   A simple Bike deed.
  */
 
-contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
+contract BikeDeed is ERC721Deed, ERC721Metadata, Pausable, ReentrancyGuard {
 
   using SafeMath for uint256;
 
@@ -94,12 +94,12 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
    /* ERC721Metadata */
 
   function name()
-  external pure returns (string) {
+  public pure returns (string) {
     return "BikeDeed";
   }
 
   function symbol()
-  external pure returns (string) {
+  public pure returns (string) {
     return "BIKE";
   }
 
@@ -118,7 +118,7 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
   }
 
   function deedName(uint256 _deedId)
-  external view onlyExistingNames(_deedId) returns (string _name) {
+  public view onlyExistingNames(_deedId) returns (string _name) {
     _name = _bytes32ToString(deeds[_deedId].name);
   }
 

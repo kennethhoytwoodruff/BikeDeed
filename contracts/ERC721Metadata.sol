@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 /// @title Metadata extension to ERC-721 interface
-/// @author William Entriken (https://phor.net)
+/// @author William Entriken (https://phor.net) modified by Kenneth Woodruff
 /// @dev Specification at https://github.com/ethereum/eips/issues/XXXX
 
 interface ERC721Metadata {
@@ -23,7 +23,7 @@ interface ERC721Metadata {
 
     /// @notice A distinct name for a deed managed by this contract
     /// @dev Wallets and exchanges MAY display this to the end user.
-    function deedName(uint256 _deedId) public pure returns (string _deedName);
+    function deedName(uint256 _deedId) public view returns (string _deedName);
 
     /// @notice A distinct URI (RFC 3986) for a given token.
     /// @dev If:
