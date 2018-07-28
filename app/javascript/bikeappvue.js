@@ -38,8 +38,10 @@ var app = new Vue({
         //contractAddress: '0x83f306d638daeedc8895ba5ae6dc6e173195e056',
         // Old Ropsten Address
         //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
+        // Mainnet
+        contractAddress: '0xa7aB6FcA68f407BB5258556af221dE9d8D1A94B5',
         // Ganache Address???
-        contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
+        //contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
         userAccount: '',
         nametag: '',
         status: '',

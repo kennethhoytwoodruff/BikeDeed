@@ -2,7 +2,7 @@
 
 `BikeDeed.sol` is an implementation of the latest draft of the ERC721 standard.
 
-A somewhat functional prototype can be found here: http://bikedeed.io (requires Chrome browser with Metamask plugin and a Ropsten Ethereum account with Ether).
+A mostly functional MVP can be found here: http://bikedeed.io (requires Chrome browser with Metamask plugin and a Mainnet Ethereum account with Ether).
 
 Its inheriting contract `ERC721Deed.sol` is based on the `ERC721Token` from OpenZeppelin (https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/token/ERC721/ERC721Token.sol).
 

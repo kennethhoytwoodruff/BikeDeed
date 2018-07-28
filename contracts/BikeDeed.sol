@@ -2,7 +2,6 @@ pragma solidity ^0.4.18;
 
 import "zeppelin/contracts/math/SafeMath.sol";
 import "zeppelin/contracts/lifecycle/Pausable.sol";
-import "zeppelin/contracts/ReentrancyGuard.sol";
 import "./ERC721Deed.sol";
 import "./ERC721Metadata.sol";
 
@@ -12,7 +11,7 @@ import "./ERC721Metadata.sol";
   A simple Bike deed.
  */
 
-contract BikeDeed is ERC721Deed, ERC721Metadata, Pausable, ReentrancyGuard {
+contract BikeDeed is ERC721Deed, ERC721Metadata, Pausable {
 
   using SafeMath for uint256;
 
