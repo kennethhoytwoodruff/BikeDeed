@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="modal.css">
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-row-padding img {margin-bottom: 12px}
@@ -15,70 +16,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 #main {margin-left: 120px}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, .5);
-  display: table;
-  transition: opacity .3s ease;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-container {
-  width: 300px;
-  margin: 20px auto;
-  border: 2px solid white;
-  padding: 20px 30px;
-  background-color: #000;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-  transition: all .3s ease;
-  font-family: Helvetica, Arial, sans-serif;
-}
-
-.modal-header h3 {
-  margin-top: 0;
-  color: #fff;
-}
-
-.modal-body {
-  margin: 20px 0;
-}
-
-.modal-default-button {
-  float: center;
-}
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-
-.modal-enter {
-  opacity: 0;
-}
-
-.modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-
+[v-cloak] > * { display:none; }
+[v-cloak]::before { content: "loading..."; }
 </style>
 <body class="w3-black">
 
@@ -102,9 +41,39 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
           <div class="modal-footer">
             <slot name="footer">
-              <br>
-              <button class="modal-default-button" @click="$emit('close')">
-                Done
+              <button class="w3-bar-item w3-button w3-padding-medium w3-hover-black" @click="$emit('close')">
+                Close
+              </button>
+            </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
+
+<script type="text/x-template" id="modal-my-details-template">
+  <transition name="modal2">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+
+          <div class="modal-header">
+            <slot name="header">
+              Bike Details
+            </slot>
+          </div>
+
+          <div class="modal-body">
+            <slot name="body">
+              default body
+            </slot>
+          </div>
+
+          <div class="modal-footer">
+            <slot name="footer">
+              <button class="w3-bar-item w3-button w3-padding-medium w3-hover-black" @click="$emit('close')">
+                Close
               </button>
             </slot>
           </div>
@@ -116,56 +85,74 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
 <!-- App div -->
 
-<div id="app">
-  <!--
-<span> {{ status }} </span>
--->
-<!-- Icon Bar (Sidebar - hidden on small screens) -->
-<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
-  <!-- Avatar image in top left corner -->
-  <img src="chainlink.png" style="width:100%">
-  <a href="index.html" class="w3-bar-item w3-button w3-padding-large w3-black">
-    <i class="fa fa-home w3-xxlarge"></i>
+<div id="app" v-cloak>
+<nav class="w3-topnav w3-small w3-center">
+  <a href="index.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <p>HOME</p>
   </a>
   <a href="register.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-    <i class="fa fa-user w3-xxlarge"></i>
     <p>REGISTER</p>
   </a>
   <a href="contact.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-    <i class="fa fa-envelope w3-xxlarge"></i>
-    <p>CONTACT</p>
+    <p>ABOUT US</p>
+  </a>
+  <a  class="w3-bar-item w3-button w3-padding-large w3-hover-black" v-on:click="showMyBikes()">
+    <p>MY BIKES</p>
+  </a>
+  <a class="w3-bar-item w3-button w3-padding-large w3-hover-black" v-on:click="showAllBikes()">
+    <p>ALL BIKES</p>
   </a>
 </nav>
 
 <!-- Page Content -->
-<div class="w3-padding-large">
+<div class="w3-padding-small">
   <!-- Header/Home -->
-  <header class="w3-container w3-padding-16 w3-center w3-black">
+  <header class="w3-container w3-padding-8 w3-center w3-black">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
-      <p>{{ nametag }}</p>
+      <p>BikeDeed</p>
   </header>
 
-  <div class="w3-content w3-center w3-text-blue w3-padding-8">
-    <button class="w3-padding-2 w3-button w3-blue" v-on:click="showMyBikes()">My Bikes</button>
-    <button class="w3-padding-2 w3-button w3-blue" v-on:click="showAllBikes()">All Bikes</button>
-  </div>
+  <div class="w3-center w3-padding-8 w3-black"><input type="text" v-model="search" placeholder="Search Bikes"></div>
 
   <!-- Bike List Section -->
-  <div v-for="bike in bikelist" class="w3-content w3-center w3-text-grey w3-padding-4">
-      <button class="w3-padding-4 w3-button w3-black" v-on:click="showBikeDetails(bike)">{{ bike.name }}</button>
+  <div v-for="bike in filteredBikes" class="w3-content w3-center w3-text-grey w3-padding-4">
+      <button class="w3-padding-4 w3-button w3-hover-black" v-on:click="showBikeDetails(bike)">{{ bikeLabel(bike) }} {{ bike.serialNumber }}</button>
   </div>
 
-  <modal v-if="showDetailsModal" @close="showDetailsModal = false">
+  <modal v-if="showDetailsModal" @close="showDetailsModal=false">
     <h3 slot="header">Bike Details</h3>
     <span slot="body">
+      <!--
+      <p>BikeId: {{ bikeId }}</p>
+    -->
+      <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
+      <p>Serial Number: {{ bikeSerialNumber }}</p>
       <p>Owner: {{ bikeOwner }}</p>
       <p>Proof of Ownership</p><img height=42 width=42 src="proofofownership.png" v-on:click="displayMetaData()"></img>
-      <p>Serial Number: {{ bikeSerialNumber }}</p>
-      <p>Manufacturer: {{ bikeManufacturer }}</p>
+      <button type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
       <p>Date Created: {{ bikeDateCreated }}</p>
     </span>
   </modal>
+
+  <modal2 v-if="showMyDetailsModal" @close="showMyDetailsModal=false">
+    <h3 slot="header">My Bike Details</h3>
+    <span slot="body">
+      <!--
+      <p>BikeId: {{ bikeId }}</p>
+    -->
+      <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
+      <p>Serial Number: {{ bikeSerialNumber }}</p>
+      <p>Owner Address: {{ bikeOwner }}</p>
+      <p>Proof of Ownership</p><img height=42 width=42 src="proofofownership.png" v-on:click="displayMetaData()"></img>
+      <button type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
+      <p>Date Created: {{ bikeDateCreated }}</p>
+      <p>{{ processingMessage }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
+
+      <input v-show="displayRegistrationComponents" type="text" id="newOwnerAddress" v-model="newOwnerAddress" :placeholder="bikeOwner">
+      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="transferOwnership()">Transfer Bike Deed</button></p>
+      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="deleteBikeDeed()">Delete Bike Deed</button></p>
+    </span>
+
 
     <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">

@@ -2,7 +2,6 @@ pragma solidity ^0.4.18;
 
 import "zeppelin/contracts/math/SafeMath.sol";
 import "zeppelin/contracts/lifecycle/Pausable.sol";
-import "zeppelin/contracts/ReentrancyGuard.sol";
 import "./ERC721Deed.sol";
 import "./ERC721Metadata.sol";
 
@@ -12,7 +11,7 @@ import "./ERC721Metadata.sol";
   A simple Bike deed.
  */
 
-contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
+contract BikeDeed is ERC721Deed, ERC721Metadata, Pausable {
 
   using SafeMath for uint256;
 
@@ -94,12 +93,12 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
    /* ERC721Metadata */
 
   function name()
-  external pure returns (string) {
+  public pure returns (string) {
     return "BikeDeed";
   }
 
   function symbol()
-  external pure returns (string) {
+  public pure returns (string) {
     return "BIKE";
   }
 
@@ -118,7 +117,7 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
   }
 
   function deedName(uint256 _deedId)
-  external view onlyExistingNames(_deedId) returns (string _name) {
+  public view onlyExistingNames(_deedId) returns (string _name) {
     _name = _bytes32ToString(deeds[_deedId].name);
   }
 
@@ -157,7 +156,7 @@ contract BikeDeed is ERC721Deed, Pausable, ReentrancyGuard {
 
   // Deeds can only be burned if the contract owner is also the deed owner.
   function destroy(uint256 _deedId)
-  public onlyOwner notDeleted(_deedId) {
+  public onlyOwnerOf(_deedId) notDeleted(_deedId) {
     // We deliberately let the name stay in use, so that each name remains a unique identifier forever.
     // Iterating over an array of IDs is too expensive, so we mark the deed as deleted instead.
     deeds[_deedId].deleted = now;
