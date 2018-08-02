@@ -109,10 +109,15 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <!-- Header/Home -->
   <header class="w3-container w3-padding-8 w3-center w3-black">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
-      <p>BikeDeed</p>
+    <div v-if="web3Enabled">
+      <p>{{ networkLabel }} </p>
+    </div>
+    <div v-else>
+      Ethereum is not enabled on your browser.  Install <a href="https://metamask.io">Metamask</a> or go to the <a href="/bikes">read-only site</a>
+    </div>
   </header>
 
-  <div class="w3-center w3-padding-8 w3-black"><input type="text" v-model="search" placeholder="Search Bikes"></div>
+  <div v-if="web3Enabled" class="w3-center w3-padding-8 w3-black"><input type="text" v-model="search" placeholder="Search Bikes"></div>
 
   <!-- Bike List Section -->
   <div v-for="bike in filteredBikes" class="w3-content w3-center w3-text-grey w3-padding-4">

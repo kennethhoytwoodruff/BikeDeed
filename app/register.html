@@ -72,7 +72,6 @@ h4 span { font-size:12px; }
     <a href="contact.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <p>ABOUT US</p>
     </a>
-    <div class="w3-bar-item w3-button w3-padding-large w3-hover-black"><p>(Requires Metamask/Ropsten)</p></div>
   </nav>
 
 <!-- Page Content -->
@@ -80,8 +79,13 @@ h4 span { font-size:12px; }
   <!-- Header/Home -->
   <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
-      <p>BikeDeed</p>
+    <div v-if="web3Enabled">
+      <p>{{ networkLabel }} </p>
       <p>{{ status }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
+    </div>
+    <div v-else>
+      Ethereum is not enabled on your browser.  Install <a href="https://metamask.io">Metamask</a> or go to the <a href="/bikes">read-only site</a>
+    </div>
   </header>
 
   <div class="w3-content w3-center w3-text-grey w3-padding-30" id="about">
@@ -91,7 +95,7 @@ h4 span { font-size:12px; }
 <h4 class="w3-padding-8 w3-text-light-grey">Manufacturer</h4>
 -->
 
-<select v-model="bikeManufacturer">
+<select v-if="web3Enabled==true" v-model="bikeManufacturer">
   <option value="000">- Please Select a Bike Manufacturer -</option>
   <option v-for="manufacturer in manufacturers" v-bind:value="manufacturer.value">
     {{ manufacturer.text }}
