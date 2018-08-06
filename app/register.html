@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>The BikeDeed</title>
+<title>BikeDeed</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -14,6 +14,15 @@
     crossorigin="anonymous"></script>
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+app {
+    position: relative;
+}
+img {
+    border: 1px solid #ddd; /* Gray border */
+    border-radius: 4px;  /* Rounded border */
+    padding: 5px; /* Some padding */
+    width: 150px; /* Set a small width */
+}
 .w3-row-padding img {margin-bottom: 12px}
 /* Set the width of the sidebar to 120px */
 .w3-sidebar {width: 120px;background: #222;}
@@ -47,10 +56,10 @@ h4 span { font-size:12px; }
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="w3-bar-item w3-button w3-padding-medium w3-hover-black" v-on:click="emit">
+              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" v-on:click="emit">
                 Confirm Registration
               </button>
-              <button class="w3-bar-item w3-button w3-padding-medium w3-hover-black" @click="$emit('close')">
+              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
                 Cancel
               </button>
             </slot>
@@ -63,35 +72,43 @@ h4 span { font-size:12px; }
 
 <div id="app" v-cloak>
   <nav class="w3-topnav w3-small w3-center">
-    <a href="index.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
       <p>HOME</p>
     </a>
-    <a href="register.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-      <p>REGISTER</p>
+    <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+      <p>REGISTER A BIKE</p>
     </a>
-    <a href="contact.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-      <p>ABOUT US</p>
+    <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+      <p>ABOUT</p>
     </a>
-    <div class="w3-bar-item w3-button w3-padding-large w3-hover-black"><p>(Requires Metamask/Ropsten)</p></div>
   </nav>
 
 <!-- Page Content -->
-<div class="w3-padding-medium" id="main">
+<div class="w3-padding-small" id="main">
   <!-- Header/Home -->
-  <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
+  <header class="w3-container w3-padding-small w3-center w3-black" id="home">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
-      <p>BikeDeed</p>
+    <div v-if="web3Enabled">
+      <p>{{ networkLabel }} </p>
       <p>{{ status }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
+    </div>
+    <div v-else>
+      <p>BikeDeed</p>
+      <div class="w3-content w3-center w3-text-grey w3-padding-small">
+        <p>Ethereum is not enabled on your browser. Redirecting you to read-only site <i class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
+
+      </div>
+    </div>
   </header>
 
-  <div class="w3-content w3-center w3-text-grey w3-padding-30" id="about">
+  <div class="w3-content w3-center w3-text-grey w3-padding-small" id="about">
     <!--<hr style="width:200px" class="w3-opacity">-->
 <form id="register" action="register.html">
   <!--
 <h4 class="w3-padding-8 w3-text-light-grey">Manufacturer</h4>
 -->
 
-<select v-model="bikeManufacturer">
+<select v-if="web3Enabled==true" v-model="bikeManufacturer">
   <option value="000">- Please Select a Bike Manufacturer -</option>
   <option v-for="manufacturer in manufacturers" v-bind:value="manufacturer.value">
     {{ manufacturer.text }}
@@ -99,25 +116,26 @@ h4 span { font-size:12px; }
 </select>
 <br>
 <template v-if="bikeManufacturer!='000'">
-<h4 class="w3-padding-8 w3-text-light-grey"></h4>
+<h4 class="w3-padding-small w3-text-light-grey"></h4>
 <input type="text" size="40" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Please Enter Serial Number">
 <br>
 
 <template v-if="bikeSerialNumber!=''">
-<h4 class="w3-padding-8 w3-text-light-grey">Upload Proof Of Ownership
-<button  type="button" class="w3-padding-8 w3-button w3-hover-black" v-on:click="displayPooExample()"><span style=color:gray>(Click for Example)<span></button></h4>
+<h4 class="w3-padding-small w3-text-light-grey">Choose and Upload Proof of Ownership File
+<button  type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayPooExample()"><span style=color:gray>(Click for Example)<span></button></h4>
 <br/>
 <input type="file" name="pooFile" id="pooFile" @change="pooFileSelectedEvent($event)">
 
 <br>
-<button v-show="pooFileSelected" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="uploadFileToIpfs()">Push file to IPFS</button>
+<button v-show="pooFileSelected" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="uploadFileToIpfs()">Upload File to IPFS</button>
+<p><i v-show="showUploadSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
 <br>
-<button v-show="pooFileLoaded" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
+<button v-show="pooFileLoaded" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
 <br>
-<button v-show="pooFileLoaded" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="confirmRegistration()">Register Bike</button>
+<button v-show="pooFileLoaded" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="confirmRegistration()">Register Bike</button>
 </template>
 </template>
-<button v-show="bikeManufacturer!='000'" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="clearRegistrationForm()">Clear</button>
+<button v-show="bikeManufacturer!='000'" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="clearRegistrationForm()">Clear</button>
 </form>
 
 <modal v-on:event_child="registerBike" v-if="showDetailsModal" @close="showDetailsModal = false">
@@ -126,14 +144,14 @@ h4 span { font-size:12px; }
     <p>Serial Number: {{ bikeSerialNumber }}</p>
     <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
     <p>Owner: {{ userAccount }}</p>
-    <p>Proof of Ownership</p><img height=42 width=42 src="proofofownership.png" v-on:click="displayMetaData()"></img>
-    <button type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
+    <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
+    <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
   </span>
 </modal>
 
 <p id="demo"></p>
   </div>
-  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+  <footer class="w3-content w3-padding-small w3-text-grey w3-xlarge">
   </footer>
 </div>
 

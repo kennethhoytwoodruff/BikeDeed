@@ -9,6 +9,15 @@
 <link rel="stylesheet" href="modal.css">
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+app {
+    position: relative;
+}
+img {
+    border: 1px solid #ddd; /* Gray border */
+    border-radius: 4px;  /* Rounded border */
+    padding: 5px; /* Some padding */
+    width: 150px; /* Set a small width */
+}
 .w3-row-padding img {margin-bottom: 12px}
 /* Set the width of the sidebar to 120px */
 .w3-sidebar {width: 120px;background: #222;}
@@ -30,6 +39,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
           <div class="modal-header">
             <slot name="header">
               Bike Details
+              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">x</button>
             </slot>
           </div>
 
@@ -41,7 +51,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="w3-bar-item w3-button w3-padding-medium w3-hover-black" @click="$emit('close')">
+              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
                 Close
               </button>
             </slot>
@@ -72,7 +82,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="w3-bar-item w3-button w3-padding-medium w3-hover-black" @click="$emit('close')">
+              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
                 Close
               </button>
             </slot>
@@ -87,49 +97,55 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
 <div id="app" v-cloak>
 <nav class="w3-topnav w3-small w3-center">
-  <a href="index.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+  <a href="index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
     <p>HOME</p>
   </a>
-  <a href="register.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-    <p>REGISTER</p>
+  <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+    <p>REGISTER A BIKE</p>
   </a>
-  <a href="contact.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-    <p>ABOUT US</p>
-  </a>
-  <a  class="w3-bar-item w3-button w3-padding-large w3-hover-black" v-on:click="showMyBikes()">
+  <a  class="w3-bar-item w3-button w3-padding-small w3-hover-black" v-on:click="showMyBikes()">
     <p>MY BIKES</p>
   </a>
-  <a class="w3-bar-item w3-button w3-padding-large w3-hover-black" v-on:click="showAllBikes()">
+  <a class="w3-bar-item w3-button w3-padding-small w3-hover-black" v-on:click="showAllBikes()">
     <p>ALL BIKES</p>
+  </a>
+  <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+    <p>ABOUT</p>
   </a>
 </nav>
 
 <!-- Page Content -->
 <div class="w3-padding-small">
   <!-- Header/Home -->
-  <header class="w3-container w3-padding-8 w3-center w3-black">
+  <header class="w3-container w3-padding-small w3-center w3-black">
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
+    <div v-if="web3Enabled">
+      <p>{{ networkLabel }} </p>
+    </div>
+    <div v-else>
       <p>BikeDeed</p>
+      <div class="w3-content w3-center w3-text-grey w3-padding-small">
+        <p>Ethereum is not enabled on your browser.  Redirecting you to Limited-mode site <i class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
+      </div>
+    </div>
   </header>
 
-  <div class="w3-center w3-padding-8 w3-black"><input type="text" v-model="search" placeholder="Search Bikes"></div>
+  <div v-if="web3Enabled" class="w3-center w3-padding-small w3-black"><input type="text" v-model="search" placeholder="Search Bikes"></div>
 
   <!-- Bike List Section -->
-  <div v-for="bike in filteredBikes" class="w3-content w3-center w3-text-grey w3-padding-4">
-      <button class="w3-padding-4 w3-button w3-hover-black" v-on:click="showBikeDetails(bike)">{{ bikeLabel(bike) }} {{ bike.serialNumber }}</button>
+  <div v-for="bike in filteredBikes" class="w3-content w3-center w3-text-grey w3-padding-small">
+      <button class="w3-padding-small w3-button w3-hover-black" v-on:click="showBikeDetails(bike)">{{ bikeLabel(bike) }} {{ bike.serialNumber }}</button>
   </div>
 
   <modal v-if="showDetailsModal" @close="showDetailsModal=false">
     <h3 slot="header">Bike Details</h3>
     <span slot="body">
-      <!--
       <p>BikeId: {{ bikeId }}</p>
-    -->
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
-      <p>Owner: {{ bikeOwner }}</p>
-      <p>Proof of Ownership</p><img height=42 width=42 src="proofofownership.png" v-on:click="displayMetaData()"></img>
-      <button type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
+      <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
+      <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
+      <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
       <p>Date Created: {{ bikeDateCreated }}</p>
     </span>
   </modal>
@@ -137,25 +153,23 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <modal2 v-if="showMyDetailsModal" @close="showMyDetailsModal=false">
     <h3 slot="header">My Bike Details</h3>
     <span slot="body">
-      <!--
       <p>BikeId: {{ bikeId }}</p>
-    -->
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
-      <p>Owner Address: {{ bikeOwner }}</p>
-      <p>Proof of Ownership</p><img height=42 width=42 src="proofofownership.png" v-on:click="displayMetaData()"></img>
-      <button type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
+      <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
+      <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
+      <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
       <p>Date Created: {{ bikeDateCreated }}</p>
       <p>{{ processingMessage }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
 
       <input v-show="displayRegistrationComponents" type="text" id="newOwnerAddress" v-model="newOwnerAddress" :placeholder="bikeOwner">
-      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="transferOwnership()">Transfer Bike Deed</button></p>
-      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-16 w3-button w3-hover-black" v-on:click="deleteBikeDeed()">Delete Bike Deed</button></p>
+      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="transferOwnership()">Transfer Bike Deed</button></p>
+      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="deleteBikeDeed()">Delete Bike Deed</button></p>
     </span>
 
 
     <!-- Footer -->
-  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+  <footer class="w3-content w3-padding-small w3-text-grey w3-xlarge">
 
   </footer>
 

@@ -9,6 +9,7 @@ Vue.use(VModal, { dynamic: true })
 //import Modal from '../Modal.vue'
 
 var BikeDeed = contract(require('../../build/contracts/BikeDeed.json'));
+var Buffer = require('buffer/').Buffer;
 
 // register modal component
 Vue.component('modal', {
@@ -50,6 +51,8 @@ var app = new Vue({
         mybikes: [],
         bikelist: [],
         manufacturers: [],
+        web3Enabled: false,
+        networkLabel: '',
         // display controls
         search: '',
         showDetailsModal: false,
@@ -59,6 +62,7 @@ var app = new Vue({
         pooFileSelected: false,
         displayRegistrationComponents: true,
         showSpinner: false,
+        showUploadSpinner: false,
         // specific bike details
         bikeOwner: '',
         bikeSerialNumber: '',
@@ -83,11 +87,13 @@ var app = new Vue({
       mounted:function(){
         console.log("mounted...");
         this.initWeb3();
-        this.initAccounts();
-        this.initContract();
-        this.loadAllBikes();
-        this.initManufacturers();
-        //alert("performed mounted functions");
+        if (this.web3Enabled == true) {
+          this.initAccounts();
+          this.initContract();
+          this.loadAllBikes();
+          this.initManufacturers();
+          //alert("performed mounted functions");
+        }
       },
       beforeUpdate:function(){
         console.log("beforeUpdate...");
@@ -103,14 +109,41 @@ var app = new Vue({
           // Checking if Web3 has been injected by the browser (Mist/MetaMask)
           let self = this;
           if (typeof web3 !== 'undefined') {
-            //console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have 0 BikeDeeds, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
             console.warn("Using injected web3")
             // Use Mist/MetaMask's provider
             window.web3 = new Web3(web3.currentProvider);
+
+            var networkId = web3.version.network;
+
+            console.log('networkId: ' + networkId);
+
+            switch (networkId) {
+            case "1":
+              this.networkLabel = "BikeDeed (Mainnet)";
+              break;
+            case "2":
+              this.networkLabel = "You are on the Morden Network - Please switch to Mainnet";
+              break;
+            case "3":
+              this.networkLabel = "You are on the Ropsten Network - Please switch to Mainnet";
+              break;
+            case "4":
+              this.networkLabel = "You are on the Rinkeby Network - Please switch to Mainnet";
+              break;
+            case "42":
+              this.networkLabel = "You are on the Kovan Network - Please switch to Mainnet";
+              break;
+            default:
+              this.networkLabel = "BikeDeed";
+            }
+            this.web3Enabled = true;
           } else {
-            console.warn("No web3 detected. Falling back to http://127.0.0.1:8545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask");
+            console.warn("No web3 detected. .");
             // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-            window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+            this.web3Enabled = false;
+            this.networkLabel = "Ethereum is not enabled. Go to <a href=/bikes>read-only site.</a>";
+            window.location = "https://bikedeed.io/bikes";
+            //window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
           }
         },
         initAccounts:function(){
@@ -196,6 +229,7 @@ var app = new Vue({
       },
       showMyBikes:function() {
         this.initAccounts();
+        this.allbikes.length = 0;
         for (let index = 0; index < this.allbikes.length; ++index) {
           let bike = this.allbikes[index];
           if (bike.owner == this.userAccount) {
@@ -232,6 +266,12 @@ var app = new Vue({
      },
      confirmRegistration:function() {
        this.initAccounts();
+       // HACK ALERT: prepend 'S' if serialNumber does not contain a letter.
+       // this is due to a bug in the contract.
+       var letter = /^[a-zA-Z]+$/;
+       if (!this.bikeSerialNumber.match(letter))  {
+         this.bikeSerialNumber = 'S' + this.bikeSerialNumber;
+       }
        this.showDetailsModal = true;
      },
      deleteBikeDeed: function() {
@@ -335,7 +375,7 @@ var app = new Vue({
        // Not sure why this has to be done.
        this.initAccounts();
 
-       // TODO: form validation prior to registration
+
        if (!registerBikeOnBlockchain()) {
          return;
        }
@@ -378,21 +418,25 @@ var app = new Vue({
          const pooFile = document.getElementById("pooFile");
          const reader = new FileReader();
          const fileContents = await readUploadedFileAsBuffer(pooFile.files[0]);
-         const ipfs = window.IpfsApi('bikedeed.io', 5001) // Connect to IPFS
-         const buf = buffer.Buffer(fileContents) // Convert data into buffer
+         const ipfs = window.IpfsApi('bikedeed.io', 443, {protocol:'https'} ); // Connect to IPFS
+         const buf = Buffer.from(fileContents); // Convert data into buffer
+         this.showUploadSpinner = true;
          ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
            var self = this;
            if(err) {
              alert(err);
              console.error(err);
+             this.showUploadSpinner = false;
              return;
            }
            this.bikeIpfsHash = result[0].hash;
            this.bikeUrl = "https://ipfs.io/ipfs/" + this.bikeIpfsHash;
+           this.showUploadSpinner = false;
+           this.pooFileLoaded = true;
         });
       }
+      this.showUploadSpinner = true;
       uploadFile();
-      this.pooFileLoaded = true;
     },
     sleep:function(milliseconds) {
       var start = new Date().getTime();
