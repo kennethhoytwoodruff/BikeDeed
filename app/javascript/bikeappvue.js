@@ -9,6 +9,7 @@ Vue.use(VModal, { dynamic: true })
 //import Modal from '../Modal.vue'
 
 var BikeDeed = contract(require('../../build/contracts/BikeDeed.json'));
+var Buffer = require('buffer/').Buffer;
 
 // register modal component
 Vue.component('modal', {
@@ -61,6 +62,7 @@ var app = new Vue({
         pooFileSelected: false,
         displayRegistrationComponents: true,
         showSpinner: false,
+        showUploadSpinner: false,
         // specific bike details
         bikeOwner: '',
         bikeSerialNumber: '',
@@ -140,6 +142,7 @@ var app = new Vue({
             // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
             this.web3Enabled = false;
             this.networkLabel = "Ethereum is not enabled. Go to <a href=/bikes>read-only site.</a>";
+            window.location = "https://bikedeed.io/bikes";
             //window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
           }
         },
@@ -226,6 +229,7 @@ var app = new Vue({
       },
       showMyBikes:function() {
         this.initAccounts();
+        this.allbikes.length = 0;
         for (let index = 0; index < this.allbikes.length; ++index) {
           let bike = this.allbikes[index];
           if (bike.owner == this.userAccount) {
@@ -262,6 +266,12 @@ var app = new Vue({
      },
      confirmRegistration:function() {
        this.initAccounts();
+       // HACK ALERT: prepend 'S' if serialNumber does not contain a letter.
+       // this is due to a bug in the contract.
+       var letter = /^[a-zA-Z]+$/;
+       if (!this.bikeSerialNumber.match(letter))  {
+         this.bikeSerialNumber = 'S' + this.bikeSerialNumber;
+       }
        this.showDetailsModal = true;
      },
      deleteBikeDeed: function() {
@@ -365,7 +375,7 @@ var app = new Vue({
        // Not sure why this has to be done.
        this.initAccounts();
 
-       // TODO: form validation prior to registration
+
        if (!registerBikeOnBlockchain()) {
          return;
        }
@@ -408,21 +418,25 @@ var app = new Vue({
          const pooFile = document.getElementById("pooFile");
          const reader = new FileReader();
          const fileContents = await readUploadedFileAsBuffer(pooFile.files[0]);
-         const ipfs = window.IpfsApi('bikedeed.io', 5001) // Connect to IPFS
-         const buf = buffer.Buffer(fileContents) // Convert data into buffer
+         const ipfs = window.IpfsApi('bikedeed.io', 443, {protocol:'https'} ); // Connect to IPFS
+         const buf = Buffer.from(fileContents); // Convert data into buffer
+         this.showUploadSpinner = true;
          ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
            var self = this;
            if(err) {
              alert(err);
              console.error(err);
+             this.showUploadSpinner = false;
              return;
            }
            this.bikeIpfsHash = result[0].hash;
            this.bikeUrl = "https://ipfs.io/ipfs/" + this.bikeIpfsHash;
+           this.showUploadSpinner = false;
+           this.pooFileLoaded = true;
         });
       }
+      this.showUploadSpinner = true;
       uploadFile();
-      this.pooFileLoaded = true;
     },
     sleep:function(milliseconds) {
       var start = new Date().getTime();
