@@ -1,0 +1,27 @@
+.qrcode-text-btn {
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+  background: url(QR_icon.svg.png) 50% 50% no-repeat;
+  cursor: pointer;
+}
+
+.qrcode-text-btn > input[type=file] {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.qrcode-text {
+  padding-right: 1.7em;
+  margin-right: 0;
+  vertical-align: middle;
+}
+
+.qrcode-text + .qrcode-text-btn {
+  width: 1.7em;
+  margin-left: -1.7em;
+  vertical-align: middle;
+}

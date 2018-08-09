@@ -90,13 +90,11 @@ h4 span { font-size:12px; }
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
     <div v-if="web3Enabled">
       <p>{{ networkLabel }} </p>
-      <p>{{ status }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
     </div>
     <div v-else>
       <p>BikeDeed</p>
       <div class="w3-content w3-center w3-text-grey w3-padding-small">
         <p>Ethereum is not enabled on your browser. Redirecting you to read-only site <i class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
-
       </div>
     </div>
   </header>
