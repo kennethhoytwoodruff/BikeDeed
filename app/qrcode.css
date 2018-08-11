@@ -1,9 +1,12 @@
 .qrcode-text-btn {
   display: inline-block;
-  height: 1em;
-  width: 1em;
-  background: url(QR_icon.svg) 50% 50% no-repeat;
+  height: 4em;
+  width: 4em;
+  background: #ffffff  url(QR_icon.svg) 50% 50% no-repeat;
   cursor: pointer;
+  border: 1px solid #ddd; /* Gray border */
+  border-radius: 4px;  /* Rounded border */
+  padding: 5px; /* Some padding */
 }
 
 .qrcode-text-btn > input[type=file] {

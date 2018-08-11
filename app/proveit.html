@@ -10,7 +10,6 @@
 <script src="https://rawgit.com/sitepoint-editors/jsqrcode/master/src/qr_packed.js">
 </script>
 <link rel="stylesheet" href="qrcode.css">
-</script>
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 app {
@@ -104,10 +103,10 @@ img {
     <p>HOME</p>
   </a>
   <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>SCAN A BIKE</p>
+    <p>REGISTER A BIKE</p>
   </a>
   <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>ABOUT</p>
+    <p>FAQ</p>
   </a>
 </nav>
 
@@ -129,13 +128,16 @@ img {
 
   <div v-if="web3Enabled" class="w3-center w3-padding-small w3-black">
     <div v-if="isMobile()">
+<!--
     <input type=text class=qrcode-text
 ><label class=qrcode-text-btn>
+-->
+<label class=qrcode-text-btn>
       <input type=file
-         name=qrcodeinput
+         id=qrcodeinput
          accept="image/*"
          capture=environment
-         v-on:change="openQRCamera(this)"
+          v-on:change="openQRCamera(this)"
          tabindex=-1>
       </label>
     </div>
@@ -150,8 +152,10 @@ img {
   <modal v-if="showDetailsModal" @close="showDetailsModal=false">
     <h3 slot="header">You don't own this Bike!</h3>
     <span slot="body">
+      <p>BikeId: {{ bikeId }}</p>
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
+      <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
       <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
       <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
       <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
@@ -162,9 +166,10 @@ img {
   <modal2 v-if="showMyDetailsModal" @close="showMyDetailsModal=false">
     <h3 slot="header">Congratulation! You own this Bike!</h3>
     <span slot="body">
+      <p>BikeId: {{ bikeId }}</p>
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
-      <p>Your Address: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
+      <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
       <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
       <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
       <p>Date Created: {{ bikeDateCreated }}</p>
