@@ -2,7 +2,7 @@
   display: inline-block;
   height: 1em;
   width: 1em;
-  background: url(QR_icon.svg.png) 50% 50% no-repeat;
+  background: url(QR_icon.svg) 50% 50% no-repeat;
   cursor: pointer;
 }
 

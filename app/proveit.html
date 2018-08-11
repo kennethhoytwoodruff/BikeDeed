@@ -10,26 +10,6 @@
 <script src="https://rawgit.com/sitepoint-editors/jsqrcode/master/src/qr_packed.js">
 </script>
 <link rel="stylesheet" href="qrcode.css">
-<script language="javascript">
-function openQRCamera(node) {
-  var reader = new FileReader();
-  reader.onload = function() {
-    node.value = "";
-    qrcode.callback = function(res) {
-      if(res instanceof Error) {
-        alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
-      } else {
-        alert(res);
-        node.parentNode.previousElementSibling.value = res;
-      }
-    };
-    qrcode.decode(reader.result);
-  };
-  reader.readAsDataURL(node.files[0]);
-}
-function showQRIntro() {
-  return confirm("Use your camera to take a picture of a QR code.");
-}
 </script>
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
@@ -124,7 +104,7 @@ img {
     <p>HOME</p>
   </a>
   <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>REGISTER A BIKE</p>
+    <p>SCAN A BIKE</p>
   </a>
   <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
     <p>ABOUT</p>
@@ -152,9 +132,10 @@ img {
     <input type=text class=qrcode-text
 ><label class=qrcode-text-btn>
       <input type=file
+         name=qrcodeinput
          accept="image/*"
          capture=environment
-          onchange="openQRCamera(this);"
+         v-on:change="openQRCamera(this)"
          tabindex=-1>
       </label>
     </div>
@@ -169,10 +150,8 @@ img {
   <modal v-if="showDetailsModal" @close="showDetailsModal=false">
     <h3 slot="header">You don't own this Bike!</h3>
     <span slot="body">
-      <p>BikeId: {{ bikeId }}</p>
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
-      <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
       <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
       <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
       <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
@@ -183,10 +162,9 @@ img {
   <modal2 v-if="showMyDetailsModal" @close="showMyDetailsModal=false">
     <h3 slot="header">Congratulation! You own this Bike!</h3>
     <span slot="body">
-      <p>BikeId: {{ bikeId }}</p>
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
-      <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
+      <p>Your Address: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
       <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
       <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
       <p>Date Created: {{ bikeDateCreated }}</p>

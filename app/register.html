@@ -76,10 +76,10 @@ h4 span { font-size:12px; }
       <p>HOME</p>
     </a>
     <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-      <p>REGISTER A BIKE</p>
+      <p>ADD A BIKE</p>
     </a>
     <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-      <p>ABOUT</p>
+      <p>FAQ</p>
     </a>
   </nav>
 
@@ -107,7 +107,7 @@ h4 span { font-size:12px; }
 -->
 
 <select v-if="web3Enabled==true" v-model="bikeManufacturer">
-  <option value="000">- Please Select a Bike Manufacturer -</option>
+  <option value="000">- Select Bike Manufacturer -</option>
   <option v-for="manufacturer in manufacturers" v-bind:value="manufacturer.value">
     {{ manufacturer.text }}
   </option>
@@ -115,7 +115,7 @@ h4 span { font-size:12px; }
 <br>
 <template v-if="bikeManufacturer!='000'">
 <h4 class="w3-padding-small w3-text-light-grey"></h4>
-<input type="text" size="40" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Please Enter Serial Number">
+<input type="text" size="40" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Enter Serial Number">
 <br>
 
 <template v-if="bikeSerialNumber!=''">

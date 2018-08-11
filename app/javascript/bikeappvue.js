@@ -331,38 +331,55 @@ var app = new Vue({
        }
      },
      openQRCamera: function(node) {
-       var reader = new FileReader();
-       reader.onload = function() {
-         node.value = "";
-         qrcode.callback = function(res) {
-           if(res instanceof Error) {
-             alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
-           } else {
-             var strarray = res.split(" ");
-             if (strarray[0] != "bikedeedid" ) {
-               alert("Not a BikeDeed QR code.");
-               return;
-             }
-             var deedId = strarray[1];
-             alert("deedId: " + deedId);
-             this.verifyOwnership(deedId);
-           }
+       var self = this;
+
+       const getQRCode = (inputFile) => {
+         var reader = new FileReader();
+         return new Promise((resolve, reject) => {
+           reader.onerror = () => {
+           reader.abort();
+           reject(new Exception("Problem reading QR Code."));
          };
-         qrcode.decode(reader.result);
+         reader.onload = () => {
+           node.value = "";
+           qrcode.callback = function(res) {
+             if(res instanceof Error) {
+               alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
+             } else {
+               var strarray = res.split(" ");
+               if (strarray[0] != "bikedeedid" ) {
+                 alert("This is not a BikeDeed QR Code.");
+                 reject(new Exception("This is not a Bikeed QR Code."));
+               }
+               var deedId = strarray[1];
+               resolve(deedId);
+             }
+           }
+           qrcode.decode(reader.result);
+         };
+         reader.readAsDataURL(inputFile);
+         });
        };
-       reader.readAsDataURL(node.files[0]);
+
+       const handleQRCode = async () => {
+         var self = this;
+         const deedId = await getQRCode(node.qrcodeinput.files[0]);
+         this.verifyOwnership(deedId);
+       }
+
+       handleQRCode();
      },
-     showQRIntro: function() {
-       return confirm("Use your camera to take a picture of a QR code.");
-     },
-     verifyOwnership: function() {
+     verifyOwnership: function(deedId) {
+        var self = this;
         this.initAccounts();
         for (let index = 0; index < this.allbikes.length; ++index) {
-          let bike = this.allbikes[index];
-          if (bike.id == this.bikeId) {
+          const bike = this.allbikes[index];
+          if (bike.id == deedId) {
             this.showBikeDetails(bike);
+            return;
           }
         }
+        alert("No bike found for deed ID: " + deedId);
      },
      transferOwnership: function() {
        const transfer = async () => {

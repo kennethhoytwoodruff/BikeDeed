@@ -100,21 +100,15 @@ img {
     <p>HOME</p>
   </a>
   <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>REGISTER A BIKE</p>
-  </a>
-  <a  class="w3-bar-item w3-button w3-padding-small w3-hover-black" v-on:click="showMyBikes()">
-    <p>MY BIKES</p>
-  </a>
-  <a class="w3-bar-item w3-button w3-padding-small w3-hover-black" v-on:click="showAllBikes()">
-    <p>ALL BIKES</p>
+    <p>ADD A BIKE</p>
   </a>
   <div v-if="isMobile()">
-  <a href="proveit.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>SCAN QR CODE</p>
-  </a>
+    <a href="proveit.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+      <p>SCAN A BIKE</p>
+    </a>
   </div>
   <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>ABOUT</p>
+    <p>FAQ</p>
   </a>
 </nav>
 
@@ -138,7 +132,12 @@ img {
 
   <!-- Bike List Section -->
   <div v-for="bike in filteredBikes" class="w3-content w3-center w3-text-grey w3-padding-small">
+     <div v-if="bike.owner==userAccount">
+      <button class="w3-padding-small w3-button w3-hover-black" v-on:click="showBikeDetails(bike)">* {{ bikeLabel(bike) }} {{ bike.serialNumber }}</button>
+    </div>
+     <div v-else>
       <button class="w3-padding-small w3-button w3-hover-black" v-on:click="showBikeDetails(bike)">{{ bikeLabel(bike) }} {{ bike.serialNumber }}</button>
+    </div>
   </div>
 
   <modal v-if="showDetailsModal" @close="showDetailsModal=false">
