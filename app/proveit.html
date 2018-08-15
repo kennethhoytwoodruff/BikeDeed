@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="modal.css">
+<script src="https://rawgit.com/sitepoint-editors/jsqrcode/master/src/qr_packed.js">
+</script>
+<link rel="stylesheet" href="qrcode.css">
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 app {
@@ -21,8 +24,6 @@ img {
 .w3-row-padding img {margin-bottom: 12px}
 /* Set the width of the sidebar to 120px */
 .w3-sidebar {width: 120px;background: #222;}
-/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-#main {margin-left: 120px}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
 [v-cloak] > * { display:none; }
@@ -100,13 +101,8 @@ img {
     <p>HOME</p>
   </a>
   <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>ADD A BIKE</p>
+    <p>REGISTER A BIKE</p>
   </a>
-  <div v-if="isMobile()">
-    <a href="proveit.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-      <p>SCAN A BIKE</p>
-    </a>
-  </div>
   <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
     <p>FAQ</p>
   </a>
@@ -128,26 +124,36 @@ img {
     </div>
   </header>
 
-  <div v-if="web3Enabled" class="w3-center w3-padding-small w3-black"><input type="text" v-model="search" placeholder="Search Bikes"></div>
-
-  <!-- Bike List Section -->
-  <div v-for="bike in filteredBikes" class="w3-content w3-center w3-text-grey w3-padding-small">
-     <div v-if="bike.owner==userAccount">
-      <button class="w3-padding-small w3-button w3-hover-black" v-on:click="showBikeDetails(bike)">* {{ bikeLabel(bike) }} {{ bike.serialNumber }}</button>
+  <div v-if="web3Enabled" class="w3-center w3-padding-small w3-black">
+    <div v-if="isMobile()">
+<!--
+    <input type=text class=qrcode-text
+><label class=qrcode-text-btn>
+-->
+<label class=qrcode-text-btn>
+      <input type=file
+         id=qrcodeinput
+         accept="image/*"
+         capture=environment
+          v-on:change="openQRCamera(this)"
+         tabindex=-1>
+      </label>
     </div>
-     <div v-else>
-      <button class="w3-padding-small w3-button w3-hover-black" v-on:click="showBikeDetails(bike)">{{ bikeLabel(bike) }} {{ bike.serialNumber }}</button>
+    <div v-else>
+      <label class=qrcode-text-input>
+         <input type="text" id="bikeId" v-model="bikeId" :placeholder="bikeId">
+         <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="verifyOwnership()">Verify Ownership</button></p>
+      </label>
     </div>
   </div>
 
   <modal v-if="showDetailsModal" @close="showDetailsModal=false">
-    <h3 slot="header">Bike Details</h3>
+    <h3 slot="header">You don't own this Bike!</h3>
     <span slot="body">
-      <!--
       <p>BikeId: {{ bikeId }}</p>
-    -->
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
+      <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
       <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
       <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
       <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
@@ -156,11 +162,9 @@ img {
   </modal>
 
   <modal2 v-if="showMyDetailsModal" @close="showMyDetailsModal=false">
-    <h3 slot="header">My Bike Details</h3>
+    <h3 slot="header">Congratulation! You own this Bike!</h3>
     <span slot="body">
-      <!--
       <p>BikeId: {{ bikeId }}</p>
-    -->
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
       <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>

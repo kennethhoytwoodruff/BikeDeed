@@ -2,6 +2,7 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+    mode: 'development',
     entry:  {
       bikeappvue: __dirname + "/app/javascript/bikeappvue.js",
       vue: __dirname + "/app/javascript/vue.js",
@@ -37,11 +38,12 @@ module.exports = {
       { from: './app/index.html', to: "index.html" },
       { from: './app/register.html', to: "register.html" },
       { from: './app/contact.html', to: "contact.html" },
-      { from: './app/proofofownership.png', to: "proofofownership.png" },
+      { from: './app/proveit.html', to: "proveit.html" },
       { from: './app/chainlink.png', to: "chainlink.png" },
-      { from: './app/poofileinfo.png', to: "poofileinfo.png" },
       { from: './app/poofileexample.jpg', to: "poofileexample.jpg" },
-      { from: './app/modal.css', to: "modal.css" }
+      { from: './app/QR_icon.svg', to: "QR_icon.svg" },
+      { from: './app/modal.css', to: "modal.css" },
+      { from: './app/qrcode.css', to: "qrcode.css" }
     ])
   ],
 }

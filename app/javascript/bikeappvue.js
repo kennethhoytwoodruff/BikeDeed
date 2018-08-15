@@ -40,8 +40,9 @@ var app = new Vue({
         // Old Ropsten Address
         //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
         // Mainnet
-        contractAddress: '0xa7aB6FcA68f407BB5258556af221dE9d8D1A94B5',
+        //contractAddress: '0xa7aB6FcA68f407BB5258556af221dE9d8D1A94B5',
         // Ganache Address???
+        contractAddress: '0x7d9e9c47c81c0d700b46e5da16183ac0a15517f7',
         //contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
         userAccount: '',
         nametag: '',
@@ -49,6 +50,7 @@ var app = new Vue({
         message: '',
         allbikes: [],
         mybikes: [],
+        singleBike: '',
         bikelist: [],
         manufacturers: [],
         web3Enabled: false,
@@ -160,45 +162,66 @@ var app = new Vue({
           }
           loadContract();
         },
-        loadAllBikes: function() {
-          let self = this;
-          this.allbikes.length=0;
-          const loadBikes = async () => {
-            let deed = await BikeDeed.at(this.contractAddress);
-            let deedIds = await deed.ids();
+        isMobile:function() {
+          var userAgent = window.navigator.userAgent,
+          platform = window.navigator.platform,
+          macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+          windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+          iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+          os = null;
 
-            const FIELD_NAME  = 0
-            const FIELD_SERIAL_NUMBER = 1
-            const FIELD_MANUFACTURER = 2
-            const FIELD_IPFS_HASH = 3
-            const FIELD_DATE_CREATED = 4
-            const FIELD_DATE_DELETED = 5
+          if (macosPlatforms.indexOf(platform) !== -1) {
+            return false;
+          } else if (iosPlatforms.indexOf(platform) !== -1) {
+            return true;
+          } else if (windowsPlatforms.indexOf(platform) !== -1) {
+            return false;
+          } else if (/Android/.test(userAgent)) {
+            return true;
+          } else if (!os && /Linux/.test(platform)) {
+            return false;
+          }
+          return false;
+        },
+      loadAllBikes: function() {
+        let self = this;
+        this.allbikes.length=0;
+        const loadBikes = async () => {
+          let deed = await BikeDeed.at(this.contractAddress);
+          let deedIds = await deed.ids();
 
-            for (let i = 0; i < deedIds.length; i++) {
-              var deedId = deedIds[i];
-              var bikeDeed = await deed.deeds(deedId);
-              try {
-                var bikeOwner = await deed.ownerOf(deedId);
-              } catch(error) {
-                // probably a deleted token and therefore has no owner.
-                continue;
-              }
-              var url = await deed.deedUri(deedId);
-              const bike = {
-                id: deedId,
-                name:  web3.toAscii(bikeDeed[FIELD_NAME]),
-                serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
-                manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]).replace(/\u0000/g, ''),
-                ipfsHash: bikeDeed[FIELD_IPFS_HASH],
-                dateCreated: bikeDeed[FIELD_DATE_CREATED],
-                dateDeleted: bikeDeed[FIELD_DATE_DELETED],
-                owner: bikeOwner,
-                bikeUrl: url
-             }
-             if (web3.isAddress(bikeOwner)) {
-               this.allbikes.push(bike);
-             }
-           }
+          const FIELD_NAME  = 0
+          const FIELD_SERIAL_NUMBER = 1
+          const FIELD_MANUFACTURER = 2
+          const FIELD_IPFS_HASH = 3
+          const FIELD_DATE_CREATED = 4
+          const FIELD_DATE_DELETED = 5
+
+          for (let i = 0; i < deedIds.length; i++) {
+            var deedId = deedIds[i];
+            var bikeDeed = await deed.deeds(deedId);
+            try {
+              var bikeOwner = await deed.ownerOf(deedId);
+            } catch(error) {
+              // probably a deleted token and therefore has no owner.
+              continue;
+            }
+            var url = await deed.deedUri(deedId);
+            const bike = {
+              id: deedId,
+              name:  web3.toAscii(bikeDeed[FIELD_NAME]),
+              serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
+              manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]).replace(/\u0000/g, ''),
+              ipfsHash: bikeDeed[FIELD_IPFS_HASH],
+              dateCreated: bikeDeed[FIELD_DATE_CREATED],
+              dateDeleted: bikeDeed[FIELD_DATE_DELETED],
+              owner: bikeOwner,
+              bikeUrl: url
+            }
+            if (web3.isAddress(bikeOwner)) {
+              this.allbikes.push(bike);
+            }
+          }
         }
         loadBikes();
         this.bikelist = this.allbikes;
@@ -229,7 +252,7 @@ var app = new Vue({
       },
       showMyBikes:function() {
         this.initAccounts();
-        this.allbikes.length = 0;
+        this.mybikes.length = 0;
         for (let index = 0; index < this.allbikes.length; ++index) {
           let bike = this.allbikes[index];
           if (bike.owner == this.userAccount) {
@@ -308,6 +331,57 @@ var app = new Vue({
          return;
        }
      },
+     openQRCamera: function(node) {
+       var self = this;
+
+       const getQRCode = (inputFile) => {
+         var reader = new FileReader();
+         return new Promise((resolve, reject) => {
+           reader.onerror = () => {
+           reader.abort();
+           reject(new Exception("Problem reading QR Code."));
+         };
+         reader.onload = () => {
+           node.value = "";
+           qrcode.callback = function(res) {
+             if(res instanceof Error) {
+               alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
+             } else {
+               var strarray = res.split(" ");
+               if (strarray[0] != "bikedeedid" ) {
+                 alert("This is not a BikeDeed QR Code.");
+                 reject(new Exception("This is not a Bikeed QR Code."));
+               }
+               var deedId = strarray[1];
+               resolve(deedId);
+             }
+           }
+           qrcode.decode(reader.result);
+         };
+         reader.readAsDataURL(inputFile);
+         });
+       };
+
+       const handleQRCode = async () => {
+         var self = this;
+         const deedId = await getQRCode(node.qrcodeinput.files[0]);
+         this.verifyOwnership(deedId);
+       }
+
+       handleQRCode();
+     },
+     verifyOwnership: function(deedId) {
+        var self = this;
+        this.initAccounts();
+        for (let index = 0; index < this.allbikes.length; ++index) {
+          const bike = this.allbikes[index];
+          if (bike.id == deedId) {
+            this.showBikeDetails(bike);
+            return;
+          }
+        }
+        alert("No bike found for deed ID: " + deedId);
+     },
      transferOwnership: function() {
        const transfer = async () => {
          var self = this;
@@ -315,7 +389,9 @@ var app = new Vue({
          let deed = await BikeDeed.at(this.contractAddress);
          this.displayRegistrationComponents=false;
          this.processingMessage = "Transferring bike deed to " + this.newOwnerAddress + ". This may take a while...";
+         alert("processingMessage");
          this.showSpinner = true;
+         alert("showSpinner");
          try {
            //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
            let result = await deed.transfer(this.newOwnerAddress, this.bikeId);
@@ -327,6 +403,7 @@ var app = new Vue({
            this.showSpinner = false;
            return true;
          }
+         alert("congrates");
          this.processingMessage = "Congratulations!  Your bike has been transferred to " + this.newOwnerAddress + "!";
          this.showSpinner = false;
          this.bikeOwner = this.newOwnerAddress;

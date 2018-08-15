@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="modal.css">
-<script src="https://wzrd.in/standalone/buffer"></script>
 <script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js"
     integrity="sha384-5bXRcW9kyxxnSMbOoHzraqa7Z0PQWIao+cgeg327zit1hz5LZCEbIMx/LWKPReuB"
     crossorigin="anonymous"></script>
@@ -26,8 +25,6 @@ img {
 .w3-row-padding img {margin-bottom: 12px}
 /* Set the width of the sidebar to 120px */
 .w3-sidebar {width: 120px;background: #222;}
-/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-#main {margin-left: 120px}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
 h4 span { font-size:12px; }
@@ -59,6 +56,7 @@ h4 span { font-size:12px; }
               <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" v-on:click="emit">
                 Confirm Registration
               </button>
+              <p>{{ processingMessage }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
               <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
                 Cancel
               </button>
@@ -76,10 +74,15 @@ h4 span { font-size:12px; }
       <p>HOME</p>
     </a>
     <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-      <p>REGISTER A BIKE</p>
+      <p>ADD A BIKE</p>
     </a>
+    <div v-if="isMobile()">
+      <a href="proveit.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+        <p>SCAN A BIKE</p>
+      </a>
+    </div>
     <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-      <p>ABOUT</p>
+      <p>FAQ</p>
     </a>
   </nav>
 
@@ -90,13 +93,11 @@ h4 span { font-size:12px; }
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
     <div v-if="web3Enabled">
       <p>{{ networkLabel }} </p>
-      <p>{{ status }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
     </div>
     <div v-else>
       <p>BikeDeed</p>
       <div class="w3-content w3-center w3-text-grey w3-padding-small">
         <p>Ethereum is not enabled on your browser. Redirecting you to read-only site <i class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
-
       </div>
     </div>
   </header>
@@ -109,7 +110,7 @@ h4 span { font-size:12px; }
 -->
 
 <select v-if="web3Enabled==true" v-model="bikeManufacturer">
-  <option value="000">- Please Select a Bike Manufacturer -</option>
+  <option value="000">- Select Bike Manufacturer -</option>
   <option v-for="manufacturer in manufacturers" v-bind:value="manufacturer.value">
     {{ manufacturer.text }}
   </option>
@@ -117,7 +118,7 @@ h4 span { font-size:12px; }
 <br>
 <template v-if="bikeManufacturer!='000'">
 <h4 class="w3-padding-small w3-text-light-grey"></h4>
-<input type="text" size="40" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Please Enter Serial Number">
+<input type="text" size="40" id="bikeSerialNumber" v-model="bikeSerialNumber" style="text-transform:uppercase" placeholder="Enter Serial Number">
 <br>
 
 <template v-if="bikeSerialNumber!=''">
