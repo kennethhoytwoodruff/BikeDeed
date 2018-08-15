@@ -65,8 +65,8 @@ const populateDeeds = async () => {
     await deed.create(_serialNumber6, _manufacturer6, _ipfs6, _owner6);
     await deed.create(_serialNumber7, _manufacturer7, _ipfs7, _owner7);
     // Optionally add your PERSONAL bike(s) here, so the "My Bikes" link will work.
-    await deed.create("My$3r1AlnuM53R", "S25", _ipfs8, "0x28b54fa6fbd87ce560484deb6d750d2fff243552");
-    await deed.create("MyS3r1AlnuM53R2", "F05", _ipfs1, "0x28b54fa6fbd87ce560484deb6d750d2fff243552");
+    await deed.create("My$3r1AlnuM53R", "S25", _ipfs8, "0xbf00309c721accdf1f44f60c601b99bf2863b338");
+    await deed.create("My$3r1AlnuM53R", "F05", _ipfs8, "0xbf00309c721accdf1f44f60c601b99bf2863b338");
 
 
   } catch (error) {

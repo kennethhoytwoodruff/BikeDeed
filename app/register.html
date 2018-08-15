@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="modal.css">
-<script src="https://wzrd.in/standalone/buffer"></script>
 <script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js"
     integrity="sha384-5bXRcW9kyxxnSMbOoHzraqa7Z0PQWIao+cgeg327zit1hz5LZCEbIMx/LWKPReuB"
     crossorigin="anonymous"></script>
@@ -26,8 +25,6 @@ img {
 .w3-row-padding img {margin-bottom: 12px}
 /* Set the width of the sidebar to 120px */
 .w3-sidebar {width: 120px;background: #222;}
-/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-#main {margin-left: 120px}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
 h4 span { font-size:12px; }
@@ -59,6 +56,7 @@ h4 span { font-size:12px; }
               <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" v-on:click="emit">
                 Confirm Registration
               </button>
+              <p>{{ processingMessage }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
               <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
                 Cancel
               </button>
@@ -78,9 +76,11 @@ h4 span { font-size:12px; }
     <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
       <p>ADD A BIKE</p>
     </a>
-    <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-      <p>SCAN A BIKE</p>
-    </a>
+    <div v-if="isMobile()">
+      <a href="proveit.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+        <p>SCAN A BIKE</p>
+      </a>
+    </div>
     <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
       <p>FAQ</p>
     </a>

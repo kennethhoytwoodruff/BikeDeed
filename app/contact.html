@@ -6,16 +6,185 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script language="javascript">
+/*
+*   This content is licensed according to the W3C Software License at
+*   https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+*
+*   File:   ButtonExpand.js
+*
+*   Desc:   Checkbox widget that implements ARIA Authoring Practices
+*           for a menu of links
+*/
+
+/*
+*   @constructor ButtonExpand
+*
+*
+*/
+var ButtonExpand = function (domNode) {
+
+  this.domNode = domNode;
+
+  this.keyCode = Object.freeze({
+    'RETURN': 13
+  });
+};
+
+ButtonExpand.prototype.init = function () {
+
+  this.controlledNode = false;
+
+  var id = this.domNode.getAttribute('aria-controls');
+
+  if (id) {
+    this.controlledNode = document.getElementById(id);
+  }
+
+  this.domNode.setAttribute('aria-expanded', 'false');
+  this.hideContent();
+
+  this.domNode.addEventListener('keydown',    this.handleKeydown.bind(this));
+  this.domNode.addEventListener('click',      this.handleClick.bind(this));
+  this.domNode.addEventListener('focus',      this.handleFocus.bind(this));
+  this.domNode.addEventListener('blur',       this.handleBlur.bind(this));
+
+};
+
+ButtonExpand.prototype.showContent = function () {
+
+  if (this.controlledNode) {
+    this.controlledNode.style.display = 'block';
+  }
+
+};
+
+ButtonExpand.prototype.hideContent = function () {
+
+  if (this.controlledNode) {
+    this.controlledNode.style.display = 'none';
+  }
+
+};
+
+ButtonExpand.prototype.toggleExpand = function () {
+
+  if (this.domNode.getAttribute('aria-expanded') === 'true') {
+    this.domNode.setAttribute('aria-expanded', 'false');
+    this.hideContent();
+  }
+  else {
+    this.domNode.setAttribute('aria-expanded', 'true');
+    this.showContent();
+  }
+
+};
+
+/* EVENT HANDLERS */
+
+ButtonExpand.prototype.handleKeydown = function (event) {
+
+  console.log('[keydown]');
+
+  switch (event.keyCode) {
+
+    case this.keyCode.RETURN:
+
+      this.toggleExpand();
+
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+
+    default:
+      break;
+  }
+
+};
+
+ButtonExpand.prototype.handleClick = function (event) {
+  this.toggleExpand();
+};
+
+ButtonExpand.prototype.handleFocus = function (event) {
+  this.domNode.classList.add('focus');
+};
+
+ButtonExpand.prototype.handleBlur = function (event) {
+  this.domNode.classList.remove('focus');
+};
+
+/* Initialize Hide/Show Buttons */
+
+window.addEventListener('load', function (event) {
+
+  var buttons =  document.querySelectorAll('button[aria-expanded][aria-controls]');
+
+  for (var i = 0; i < buttons.length; i++) {
+    var be = new ButtonExpand(buttons[i]);
+    be.init();
+  }
+
+}, false);
+</script>
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-row-padding img {margin-bottom: 12px}
 /* Set the width of the sidebar to 120px */
 .w3-sidebar {width: 120px;background: #222;}
-/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-#main {margin-left: 120px}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+dl.faq button {
+    margin: 0;
+    padding: 0;
+    margin-top: 1em;
+    font-weight: bold;
+    font-size: 110%;
+    border: thin solid transparent;
+    background-color: transparent;
+    padding-left: 0.125em;
+    color: #A9A9A9;
+}
+
+dl dd {
+  margin: 0;
+  padding: 0;
+  margin-left: 1.5em;
+  color: #808080;
+}
+
+dl.faq .desc {
+    margin: 0;
+    padding: 0.5em;
+    font-size: 110%;
+    display: none;
+    background-color: #000000;
+    color: #808080;
+}
+
+dl.faq button:hover,
+dl.faq button:focus {
+  background-color: #000000;
+  color: #808080;
+}
+
+dl.faq button:focus {
+  border-color: #000000;
+  color: #808080;
+}
+
+dl.faq button:hover {
+  text-decoration: underline;
+  color: #808080;
+}
+
+dl.faq button:active {
+  background-color: #808080;
+  color: #808080;
+}
+
 </style>
+
 <body class="w3-black">
 
 <nav class="w3-topnav w3-small w3-center">
@@ -34,32 +203,114 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
       <p id="nametag">BikeDeed</p>
   </header>
+
+
   <div class="w3-content w3-center w3-text-grey w3-padding-small" id="about">
-      BikeDeed is a dApp (Decentralized App) that runs on the Ethereum blockchain.
-      BikeDeed is a very simple Proof Of Ownership Application for Bicycles.  BikeDeed is an implementation of the emerging ERC721 Token Standard.
-    <br>
-    <br>
-      <a href=https://github.com/kennethhoytwoodruff/BikeDeed>https://github.com/kennethhoytwoodruff/BikeDeed<a/>
-        <br>
-      <a href=https://github.com/kennethhoytwoodruff/BikeDeed>https://github.com/kennethhoytwoodruff/BikeDeedServer<a/>
-    <br>
-  </div>
-  <!-- Contact Section -->
-  <div class="w3-padding-small w3-content w3-center w3-text-grey" id="contact">
-	  Contact me at kennethhoytwoodruff@gmail.com
-      <br>
+  <dl class="faq">
+    <dt>
+      <button aria-expanded="false" aria-controls="faq1_desc">
+        What is BikeDeed?
+      </button>
+    </dt>
+    <dd>
+      <p id="faq1_desc" class="desc">
+        BikeDeed is a Decentralized proof-of-ownership application running as a smart contract on the Ethereum blockchain.
+        Here is a video describing BikeDeed.
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/i9-xZ_j4TMM" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </p>
+    </dd>
+    <dt>
+      <button aria-expanded="false" aria-controls="faq2_desc">
+        What is the status of BikeDeed?
+      </button>
+    </dt>
+    <dd>
+      <p id="faq2_desc" class="desc">
+         BikeDeed is currenly running as an <a href="https://en.wikipedia.org/wiki/Minimum_viable_product">MVP (Minimal Viable Product)</a> on the Ethereum Mainnet.
+      </p>
+    </dd>
+    <dt>
+      <button aria-expanded="false" aria-controls="faq3_desc">
+        Who should use BikeDeed?
+      </button>
+    </dt>
+    <dd>
+      <p id="faq3_desc" class="desc">
+        Anyone who wants their bicycle ownership to be irrefutablely recorded on the public record should use this app.
+      </p>
+    </dd>
+    <dt>
+      <button aria-expanded="false" aria-controls="faq4_desc">
+        What software do I need to use BikeDeed?
+      </button>
+    </dt>
+    <dd>
+      <p id="faq4_desc" class="desc">
+       You need a Web3 enabled browser such as Chrome with the <a href="https://metamask.io">Metamask</a> plugin.  For the iPhone or Android you should use the <a href="https://trustwalletapp.com/">Trust</a> or <a href="https://www.cipherbrowser.com/">Cipher</a> mobile wallets. You also need an Ethereum account and some Ether.
+      </p>
+    </dd>
+
+    <dt>
+      <button aria-expanded="false" aria-controls="faq5_desc">
+          What technologies does BikeDeed use?
+      </button>
+    </dt>
+    <dd>
+      <p id="faq5_desc" class="desc">
+          On the backend, BikeDeed uses Ethereum smart contracts based on the ERC721 standard for non-fungible tokens.  File handling and hashing uses the IPFS (Interplanetary File System).  There is a tiny bit of Web Server functionality which uses nginx and node.js.  The frontend uses Javascript, HTML and Web3.
+      </p>
+    </dd>
+
+    <dt>
+      <button aria-expanded="false" aria-controls="faq6_desc">
+        Does BikeDeed want any personal information from me?
+      </button>
+    </dt>
+    <dd>
+      <p id="faq6_desc" class="desc">
+        No.
+      </p>
+    </dd>
+
+    <dt>
+      <button aria-expanded="false" aria-controls="faq7_desc">
+        Is BikeDeed Open Source?
+      </button>
+    </dt>
+    <dd>
+      <p id="faq7_desc" class="desc">
+          Yes, BikeDeed uses the MIT License and can be found here <a href="https://github.com/kennethhoytwoodruff/BikeDeed">on GitHub.</a>.
+      </p>
+    </dd>
+
+    <dt>
+      <button aria-expanded="false" aria-controls="faq8_desc">
+        Who do I contact for support or more information?
+      </button>
+    </dt>
+    <dd>
+      <p id="faq8_desc" class="desc">
+        Contact kennethhoytwoodruff@gmail.com.  I will get back to you ASAP.
+      </p>
+    </dd>
+    <dt>
+      <button aria-expanded="false" aria-controls="faq9_desc">
+        Are there any tutorials available?
+      </button>
+    </dt>
+    <dd>
+      <p id="faq9_desc" class="desc">
+        Yes, here is a video describing how to use BikeDeed's major features.
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/_hNJdtYBr6A" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </p>
+    </dd>
+
+  </dl>
 
   </div>
 
     <!-- Footer -->
   <footer class="w3-content w3-padding-small w3-text-grey w3-xlarge">
-    <!--<i class="fa fa-facebook-official w3-hover-opacity"></i>
-    <i class="fa fa-instagram w3-hover-opacity"></i>
-    <i class="fa fa-snapchat w3-hover-opacity"></i>
-    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
-    <i class="fa fa-twitter w3-hover-opacity"></i>
-    <i class="fa fa-linkedin w3-hover-opacity"></i>
-    <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>-->
   <!-- End footer -->
   </footer>
 
