@@ -40,9 +40,8 @@ var app = new Vue({
         // Old Ropsten Address
         //contractAddress: '0xdeEe03988C64C3aa4fcFe36896c4272ACF490a33',
         // Mainnet
-        //contractAddress: '0xa7aB6FcA68f407BB5258556af221dE9d8D1A94B5',
+        contractAddress: '0xa7aB6FcA68f407BB5258556af221dE9d8D1A94B5',
         // Ganache Address???
-        contractAddress: '0x7d9e9c47c81c0d700b46e5da16183ac0a15517f7',
         //contractAddress: '0x8fac4e98317322f8069307ccfbb64e8fdd9c180d',
         userAccount: '',
         nametag: '',
@@ -88,6 +87,14 @@ var app = new Vue({
       },
       mounted:function(){
         console.log("mounted...");
+
+        var accountInterval = setInterval(function() {
+          if (web3.eth.accounts[0] !== this.userAccount) {
+            this.userAccount = web3.eth.accounts[0];
+            updateInterface();
+          }
+        }, 100);
+
         this.initWeb3();
         if (this.web3Enabled == true) {
           this.initAccounts();
@@ -107,16 +114,22 @@ var app = new Vue({
         console.log("activated...");
       },
       methods:{
-        initWeb3:function(){
+        updateInterface:function() {
+           window.location.reload(true);
+        },
+        loadCurrentProvider:function () {
+
+        },
+        initWeb3:function() {
           // Checking if Web3 has been injected by the browser (Mist/MetaMask)
           let self = this;
           if (typeof web3 !== 'undefined') {
+
             console.warn("Using injected web3")
             // Use Mist/MetaMask's provider
             window.web3 = new Web3(web3.currentProvider);
-
+            var loadProvider
             var networkId = web3.version.network;
-
             console.log('networkId: ' + networkId);
 
             switch (networkId) {
@@ -291,7 +304,9 @@ var app = new Vue({
        this.initAccounts();
        // HACK ALERT: prepend 'S' if serialNumber does not contain a letter.
        // this is due to a bug in the contract.
-       var letter = /^[a-zA-Z]+$/;
+
+       var letter = /.*[a-zA-Z].*/;
+       //var letter = /^[a-zA-Z]+$/;
        if (!this.bikeSerialNumber.match(letter))  {
          this.bikeSerialNumber = 'S' + this.bikeSerialNumber;
        }
@@ -389,9 +404,7 @@ var app = new Vue({
          let deed = await BikeDeed.at(this.contractAddress);
          this.displayRegistrationComponents=false;
          this.processingMessage = "Transferring bike deed to " + this.newOwnerAddress + ". This may take a while...";
-         alert("processingMessage");
          this.showSpinner = true;
-         alert("showSpinner");
          try {
            //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
            let result = await deed.transfer(this.newOwnerAddress, this.bikeId);
@@ -403,7 +416,6 @@ var app = new Vue({
            this.showSpinner = false;
            return true;
          }
-         alert("congrates");
          this.processingMessage = "Congratulations!  Your bike has been transferred to " + this.newOwnerAddress + "!";
          this.showSpinner = false;
          this.bikeOwner = this.newOwnerAddress;
@@ -431,19 +443,20 @@ var app = new Vue({
          var self = this;
          BikeDeed.defaults({from: this.userAccount, gas: 900000 });
          let deed = await BikeDeed.at(this.contractAddress);
-         this.status = "Registering bike deed on the blockchain. This may take a while...";
+         this.processingMessage = "Registering bike deed on the blockchain. This may take a while...";
          this.showSpinner = true;
          try {
            //alert("creating Bike deed with "  + this.bikeSerialNumber + " " +  this.bikeManufacturer + " " +  this.bikeIpfsHash + " " +  this.userAccount);
            let result = await deed.create(this.bikeSerialNumber, this.bikeManufacturer, this.bikeIpfsHash, this.userAccount);
          } catch (error) {
            console.log(error.message);
-           this.status = error.message;
            this.showSpinner = false;
+           error.message = "You must be logged into MetaMask for this feature.";
+           this.processingMessage = error.message;
            alert(error.message);
            return false;
          }
-         this.status = "Congratulations!  Your bike has been registered on the blockchain.";
+         this.processingMessage = "Congratulations!  Your bike has been registered on the blockchain.";
          this.showSpinner = false;
          this.clearRegistrationForm();
          return true;
@@ -468,6 +481,7 @@ var app = new Vue({
         this.showDetailsModal = false;
         this.bikeManufacturerSelected = false;
         this.pooFileLoaded = false;
+        this.processingMessage = '';
      },
      pooFileSelectedEvent:function(event) {
         this.pooFileSelected = true;

@@ -25,6 +25,7 @@ img {
 .w3-row-padding img {margin-bottom: 12px}
 /* Set the width of the sidebar to 120px */
 .w3-sidebar {width: 120px;background: #222;}
+/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
 h4 span { font-size:12px; }
@@ -56,7 +57,7 @@ h4 span { font-size:12px; }
               <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" v-on:click="emit">
                 Confirm Registration
               </button>
-              <p>{{ processingMessage }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
+
               <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
                 Cancel
               </button>
@@ -77,9 +78,9 @@ h4 span { font-size:12px; }
       <p>ADD A BIKE</p>
     </a>
     <div v-if="isMobile()">
-      <a href="proveit.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-        <p>SCAN A BIKE</p>
-      </a>
+-      <a href="proveit.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+-        <p>SCAN A BIKE</p>
+-      </a>
     </div>
     <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
       <p>FAQ</p>
@@ -138,6 +139,7 @@ h4 span { font-size:12px; }
 </template>
 <button v-show="bikeManufacturer!='000'" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="clearRegistrationForm()">Clear</button>
 </form>
+<p>{{ processingMessage }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
 
 <modal v-on:event_child="registerBike" v-if="showDetailsModal" @close="showDetailsModal = false">
   <h3 slot="header">Bike Details</h3>
