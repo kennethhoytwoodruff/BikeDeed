@@ -53,6 +53,7 @@ var app = new Vue({
         bikelist: [],
         manufacturers: [],
         web3Enabled: false,
+        web3Injected: false,
         networkLabel: '',
         // display controls
         search: '',
@@ -89,11 +90,13 @@ var app = new Vue({
         console.log("mounted...");
 
         var accountInterval = setInterval(function() {
-          if (web3.eth.accounts[0] !== this.userAccount) {
-            this.userAccount = web3.eth.accounts[0];
-            updateInterface();
+          if (this.web3Injected == true) {
+            if (web3.eth.accounts[0] !== this.userAccount) {
+              this.userAccount = web3.eth.accounts[0];
+              updateInterface();
+            }
           }
-        }, 100);
+        }, 500);
 
         this.initWeb3();
         if (this.web3Enabled == true) {
@@ -124,42 +127,39 @@ var app = new Vue({
           // Checking if Web3 has been injected by the browser (Mist/MetaMask)
           let self = this;
           if (typeof web3 !== 'undefined') {
-
             console.warn("Using injected web3")
+            this.web3Injected = true;
             // Use Mist/MetaMask's provider
             window.web3 = new Web3(web3.currentProvider);
-            var loadProvider
-            var networkId = web3.version.network;
-            console.log('networkId: ' + networkId);
-
-            switch (networkId) {
-            case "1":
-              this.networkLabel = "BikeDeed (Mainnet)";
-              break;
-            case "2":
-              this.networkLabel = "You are on the Morden Network - Please switch to Mainnet";
-              break;
-            case "3":
-              this.networkLabel = "You are on the Ropsten Network - Please switch to Mainnet";
-              break;
-            case "4":
-              this.networkLabel = "You are on the Rinkeby Network - Please switch to Mainnet";
-              break;
-            case "42":
-              this.networkLabel = "You are on the Kovan Network - Please switch to Mainnet";
-              break;
-            default:
-              this.networkLabel = "BikeDeed";
-            }
-            this.web3Enabled = true;
           } else {
-            console.warn("No web3 detected. .");
-            // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-            this.web3Enabled = false;
-            this.networkLabel = "Ethereum is not enabled. Go to <a href=/bikes>read-only site.</a>";
-            window.location = "https://bikedeed.io/bikes";
-            //window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+            console.warn("No injected web3 detected, using infura.");
+            window.web3 = new Web3(
+              new Web3.providers.HttpProvider('https://mainnet.infura.io/uHJFDlXprJ52gu4uK9oA')
+            );
           }
+          var networkId = web3.version.network;
+          console.log('networkId: ' + networkId);
+
+          switch (networkId) {
+          case "1":
+            this.networkLabel = "BikeDeed (Mainnet)";
+            break;
+          case "2":
+            this.networkLabel = "You are on the Morden Network - Please switch to Mainnet";
+            break;
+          case "3":
+            this.networkLabel = "You are on the Ropsten Network - Please switch to Mainnet";
+            break;
+          case "4":
+            this.networkLabel = "You are on the Rinkeby Network - Please switch to Mainnet";
+            break;
+          case "42":
+            this.networkLabel = "You are on the Kovan Network - Please switch to Mainnet";
+            break;
+          default:
+            this.networkLabel = "BikeDeed";
+          }
+          this.web3Enabled = true;
         },
         initAccounts:function(){
           let self = this;
