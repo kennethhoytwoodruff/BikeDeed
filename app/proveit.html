@@ -103,9 +103,6 @@ img {
   <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
     <p>ADD A BIKE</p>
   </a>
-  <a href="contact.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>FAQ</p>
-  </a>
 </nav>
 
 <!-- Page Content -->
@@ -119,9 +116,10 @@ img {
     <div v-else>
       <p>BikeDeed</p>
       <div class="w3-content w3-center w3-text-grey w3-padding-small">
-        <p>Ethereum is not enabled on your browser.  Redirecting you to Limited-mode site <i class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
+        <p>Ethereum is not enabled on your browser. Using Infura.<i class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
       </div>
     </div>
+    <link rel="shortcut icon" href="favicon.png" >
   </header>
 
   <div v-if="web3Enabled" class="w3-center w3-padding-small w3-black">
