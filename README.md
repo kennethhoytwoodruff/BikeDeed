@@ -10,7 +10,12 @@ Its inheriting contract `ERC721Deed.sol` is based on the `ERC721Token` from Open
 
 ## About this example
 
-BikeDeed is a first attempt at building an Ethereum Dapp.  BikeDeed leans heavily on the incredible efforts of https://github.com/nastassiasachs/ERC721ExampleDeed, https://github.com/Michael-Free/bikechain-ethwaterloo and OpenZeppelin.  Thank you!  So far only the Chrome browser is supported.
+BikeDeed is a first attempt at building an Ethereum Dapp.  BikeDeed leans heavily on the incredible efforts of:
+1. https://github.com/nastassiasachs/ERC721ExampleDeed
+2. https://github.com/Michael-Free/bikechain-ethwaterloo.
+3. OpenZeppelin.  
+
+Thank you!  
 
 ## Prerequisites
 1. npm
