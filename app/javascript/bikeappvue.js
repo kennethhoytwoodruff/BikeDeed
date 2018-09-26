@@ -11,6 +11,8 @@ Vue.use(VModal, { dynamic: true })
 var BikeDeed = contract(require('../../build/contracts/BikeDeed.json'));
 var Buffer = require('buffer/').Buffer;
 
+window.app = app;
+
 // register modal component
 Vue.component('modal', {
   template: '#modal-details-template',
@@ -18,6 +20,9 @@ Vue.component('modal', {
     emit: function() {
 			this.$emit('event_child', 1)
 		}
+  },
+  mounted: function() {
+    app.displayQRCode();
   }
 });
 
@@ -28,10 +33,12 @@ Vue.component('modal2', {
     emit: function() {
 			this.$emit('event_child', 1)
 		}
+  },
+  mounted: function() {
+    app.displayQRCode();
   }
 });
 
-window.app = app;
 var app = new Vue({
       el: '#app',
       data: {
@@ -142,7 +149,7 @@ var app = new Vue({
 
           switch (networkId) {
           case "1":
-            this.networkLabel = "BikeDeed (Mainnet)";
+            this.networkLabel = "";
             break;
           case "2":
             this.networkLabel = "You are on the Morden Network - Please switch to Mainnet";
@@ -157,7 +164,7 @@ var app = new Vue({
             this.networkLabel = "You are on the Kovan Network - Please switch to Mainnet";
             break;
           default:
-            this.networkLabel = "BikeDeed";
+            this.networkLabel = "";
           }
           this.web3Enabled = true;
         },
@@ -291,7 +298,7 @@ var app = new Vue({
         if (this.userAccount == bike.owner) {
           this.showMyDetailsModal=true;
           this.displayRegistrationComponents=true;
-          this.processingMessage = "Transfer to Address:"
+          this.processingMessage = ""
         }
         else {
           this.showDetailsModal=true;
@@ -300,6 +307,22 @@ var app = new Vue({
      displayMetaData:function() {
        window.open(this.bikeUrl, "proofofownershipwindow", "location=yes,height=570,width=520,scrollbars=yes,status=yes");
      },
+    displayQRCode: function() {
+      var QRCode = require('qrcode');
+      var opts = {
+        width: 100,
+        height: 100,
+        errorCorrectionLevel: 'H'
+      };
+      var canvas = document.getElementById('canvas');
+      //QRCode.toCanvas(canvas, this.bikeIpfsHash, opts, function (error) {
+      QRCode.toCanvas(canvas, "bikedeedid " + this.bikeId, opts, function (error) {
+        if (error) {
+          console.error(error);
+        }
+        console.log('success!');
+      });
+    },
      confirmRegistration:function() {
        this.initAccounts();
        // HACK ALERT: prepend 'S' if serialNumber does not contain a letter.
@@ -376,7 +399,6 @@ var app = new Vue({
          reader.readAsDataURL(inputFile);
          });
        };
-
        const handleQRCode = async () => {
          var self = this;
          const deedId = await getQRCode(node.qrcodeinput.files[0]);

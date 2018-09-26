@@ -16,10 +16,10 @@
 }
 
 .modal-container {
-  width: 300px;
-  margin: 20px auto;
+  width: 365px;
+  margin: 10px auto;
   border: 2px solid white;
-  padding: 20px 30px;
+  padding: 10px 20px;
   background-color: #000;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
@@ -37,8 +37,11 @@
   left: 0;
 }
 
-.modal-default-button {
+.modal-button-default {
+  background-color: #A9A9A9;
   float: center;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 /*
@@ -62,4 +65,18 @@
 .modal-leave-active .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
+}
+
+/* Three image containers (use 25% for four, and 50% for two, etc) */
+.column {
+  float: left;
+  width: 50.00%;
+  padding: 15px;
+}
+
+/* Clear floats after image containers */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
 }

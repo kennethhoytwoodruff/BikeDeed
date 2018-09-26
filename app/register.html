@@ -18,7 +18,7 @@ app {
 }
 img {
     border: 1px solid #ddd; /* Gray border */
-    border-radius: 4px;  /* Rounded border */
+    border-radius: 8px;  /* Rounded border */
     padding: 5px; /* Some padding */
     width: 150px; /* Set a small width */
 }
@@ -71,8 +71,11 @@ h4 span { font-size:12px; }
 
 <div id="app" v-cloak>
   <nav class="w3-topnav w3-small w3-center">
-    <a href="index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+    <a href="../index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
       <p>HOME</p>
+    </a>
+    <a href="index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+      <p>LIST BIKES</p>
     </a>
     <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
       <p>ADD A BIKE</p>
@@ -88,15 +91,9 @@ h4 span { font-size:12px; }
 <div class="w3-padding-small" id="main">
   <!-- Header/Home -->
   <header class="w3-container w3-padding-small w3-center w3-black" id="home">
-    <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
+    <a href="https://bikedeed.io"><img src="bikedeedlogo.png"></a>
     <div v-if="web3Enabled">
       <p>{{ networkLabel }} </p>
-    </div>
-    <div v-else>
-      <p>BikeDeed</p>
-      <div class="w3-content w3-center w3-text-grey w3-padding-small">
-        <p>Ethereum is not enabled on your browser. Redirecting you to read-only site <i class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
-      </div>
     </div>
    <link rel="shortcut icon" href="favicon.png" >
   </header>

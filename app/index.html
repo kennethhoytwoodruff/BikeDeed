@@ -14,7 +14,7 @@ app {
 }
 img {
     border: 1px solid #ddd; /* Gray border */
-    border-radius: 4px;  /* Rounded border */
+    border-radius: 8px;  /* Rounded border */
     padding: 5px; /* Some padding */
     width: 150px; /* Set a small width */
 }
@@ -50,8 +50,8 @@ img {
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
-                Close
+              <button class="modal-button-default" @click="$emit('close')">
+                Close Window
               </button>
             </slot>
           </div>
@@ -81,8 +81,8 @@ img {
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
-                Close
+              <button class="modal-button-default" @click="$emit('close')">
+                Close Window
               </button>
             </slot>
           </div>
@@ -96,8 +96,11 @@ img {
 
 <div id="app" v-cloak>
 <nav class="w3-topnav w3-small w3-center">
-  <a href="index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+  <a href="../index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
     <p>HOME</p>
+  </a>
+  <a href="index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
+    <p>LIST BIKES</p>
   </a>
   <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
     <p>ADD A BIKE</p>
@@ -113,15 +116,9 @@ img {
 <div class="w3-padding-small">
   <!-- Header/Home -->
   <header class="w3-container w3-padding-small w3-center w3-black">
-    <h1 class="w3-jumbo"><i class="fa fa-bicycle"></i></h1>
+    <a href="https://bikedeed.io"><img src="bikedeedlogo.png"></a>
     <div v-if="web3Enabled">
       <p>{{ networkLabel }} </p>
-    </div>
-    <div v-else>
-      <p>BikeDeed</p>
-      <div class="w3-content w3-center w3-text-grey w3-padding-small">
-        <p>Ethereum is not enabled on your browser.  Redirecting you to Limited-mode site <i class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
-      </div>
     </div>
     <link rel="shortcut icon" href="favicon.png" >
   </header>
@@ -146,9 +143,17 @@ img {
     -->
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
-      <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
-      <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
-      <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
+      <p>Owner Address: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
+      <div class="row">
+        <div class="column">
+          <img v-bind:src="bikeUrl" v-on:click="displayMetaData()">
+        </div>
+        <div class="column">
+          <canvas id="canvas"></canvas>
+          <br/>
+          For Mobile dApp
+        </div>
+      </div>
       <p>Date Created: {{ bikeDateCreated }}</p>
     </span>
   </modal>
@@ -156,22 +161,25 @@ img {
   <modal2 v-if="showMyDetailsModal" @close="showMyDetailsModal=false">
     <h3 slot="header">My Bike Details</h3>
     <span slot="body">
-      <!--
-      <p>BikeId: {{ bikeId }}</p>
-    -->
       <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
       <p>Serial Number: {{ bikeSerialNumber }}</p>
-      <p>Owner: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
-      <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
-      <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
+      <p>Owner Address: <a v-bind:href="'https://etherscan.io/address/' +  bikeOwner">{{bikeOwner}}</a></p>
+      <div class="row">
+        <div class="column">
+          <img v-bind:src="bikeUrl" v-on:click="displayMetaData()">
+        </div>
+        <div class="column">
+          <canvas id="canvas"></canvas>
+          <br/>
+          For Mobile dApp
+        </div>
+      </div>
       <p>Date Created: {{ bikeDateCreated }}</p>
       <p>{{ processingMessage }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
-
-      <input v-show="displayRegistrationComponents" type="text" id="newOwnerAddress" v-model="newOwnerAddress" :placeholder="bikeOwner">
-      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="transferOwnership()">Transfer Bike Deed</button></p>
-      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="deleteBikeDeed()">Delete Bike Deed</button></p>
+      <p><button v-show="displayRegistrationComponents" type="button" class="modal-button-default" v-on:click="transferOwnership()">Transfer to Address:</button></p>
+      <p><input v-show="displayRegistrationComponents" type="text" id="newOwnerAddress" v-model="newOwnerAddress" :placeholder="bikeOwner"></p>
+      <p><button v-show="displayRegistrationComponents" type="button" class="modal-button-default" v-on:click="deleteBikeDeed()">Delete Bike Deed</button></p>
     </span>
-
 
     <!-- Footer -->
   <footer class="w3-content w3-padding-small w3-text-grey w3-xlarge">
