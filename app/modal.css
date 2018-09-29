@@ -13,6 +13,7 @@
 .modal-wrapper {
   display: table-cell;
   vertical-align: middle;
+  align-content: center;
 }
 
 .modal-container {

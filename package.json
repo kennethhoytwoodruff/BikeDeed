@@ -12,7 +12,7 @@
     "build": "webpack --mode production",
     "build-dev": "webpack-dev-server --mode development --open"
   },
-  "author": "Dick Avatar <kennethhoytwoodruff@gmail.com>",
+  "author": "<kennethhoytwoodruff@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/kennethhoytwoodruff/BikeDeed.git"
@@ -58,6 +58,7 @@
     "ethjs-abi": "^0.2.1",
     "express": "^4.16.3",
     "http-server": "^0.11.1",
+    "qrcode": "^1.2.2",
     "truffle-contract": "^3.0.4",
     "truffle-wallet-provider": "0.0.5",
     "vue": "^2.5.16",

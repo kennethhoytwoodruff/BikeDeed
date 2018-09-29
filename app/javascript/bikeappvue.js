@@ -315,8 +315,7 @@ var app = new Vue({
         errorCorrectionLevel: 'H'
       };
       var canvas = document.getElementById('canvas');
-      //QRCode.toCanvas(canvas, this.bikeIpfsHash, opts, function (error) {
-      QRCode.toCanvas(canvas, "bikedeedid " + this.bikeId, opts, function (error) {
+      QRCode.toCanvas(canvas, "https://bikedeed.io/bikes/" + this.bikeId, opts, function (error) {
         if (error) {
           console.error(error);
         }
@@ -385,12 +384,13 @@ var app = new Vue({
              if(res instanceof Error) {
                alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
              } else {
-               var strarray = res.split(" ");
-               if (strarray[0] != "bikedeedid" ) {
+               var s1 = res.substr(0, id.length - 1);
+               var s2 = res.substr(id.length - 1);
+               if (s1 != "https://bikedeed.io/bikes/" ) {
                  alert("This is not a BikeDeed QR Code.");
                  reject(new Exception("This is not a Bikeed QR Code."));
                }
-               var deedId = strarray[1];
+               var deedId = s2;
                resolve(deedId);
              }
            }

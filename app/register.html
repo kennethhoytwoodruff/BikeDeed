@@ -54,11 +54,11 @@ h4 span { font-size:12px; }
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" v-on:click="emit">
+              <button class="modal-button-default" v-on:click="emit">
                 Confirm Registration
               </button>
 
-              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
+              <button class="modal-button-default" @click="$emit('close')">
                 Cancel
               </button>
             </slot>
@@ -71,14 +71,8 @@ h4 span { font-size:12px; }
 
 <div id="app" v-cloak>
   <nav class="w3-topnav w3-small w3-center">
-    <a href="../index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-      <p>HOME</p>
-    </a>
     <a href="index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
       <p>LIST BIKES</p>
-    </a>
-    <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-      <p>ADD A BIKE</p>
     </a>
     <div v-if="isMobile()">
       <a href="proveit.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
@@ -124,15 +118,16 @@ h4 span { font-size:12px; }
 <input type="file" name="pooFile" id="pooFile" @change="pooFileSelectedEvent($event)">
 
 <br>
-<button v-show="pooFileSelected" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="uploadFileToIpfs()">Upload File to IPFS</button>
+<button v-show="pooFileSelected" type="button" class="modal-button-default" v-on:click="uploadFileToIpfs()">Upload File to IPFS</button>
 <p><i v-show="showUploadSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
 <br>
 <button v-show="pooFileLoaded" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
+<p><img v-show="pooFileLoaded" v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img></p>
 <br>
-<button v-show="pooFileLoaded" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="confirmRegistration()">Register Bike</button>
+<button v-show="pooFileLoaded" type="button" class="modal-button-default" v-on:click="confirmRegistration()">Register Bike</button>
 </template>
 </template>
-<button v-show="bikeManufacturer!='000'" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="clearRegistrationForm()">Clear</button>
+<button v-show="bikeManufacturer!='000'" type="button" class="modal-button-default" v-on:click="clearRegistrationForm()">Clear</button>
 </form>
 <p>{{ processingMessage }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
 
@@ -142,8 +137,7 @@ h4 span { font-size:12px; }
     <p>Serial Number: {{ bikeSerialNumber }}</p>
     <p>Manufacturer: {{ lookupManufacturerLabel(bikeManufacturer) }}</p>
     <p>Owner: {{ userAccount }}</p>
-    <p>Proof of Ownership</p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img>
-    <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="displayMetaData()">{{ bikeUrl }}</button>
+    <p><img v-bind:src="bikeUrl" v-on:click="displayMetaData()"></img></p>
   </span>
 </modal>
 

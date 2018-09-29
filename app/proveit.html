@@ -51,7 +51,7 @@ img {
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
+              <button class="modal-button-default" @click="$emit('close')">
                 Close Window
               </button>
             </slot>
@@ -97,9 +97,6 @@ img {
 
 <div id="app" v-cloak>
 <nav class="w3-topnav w3-small w3-center">
-  <a href="../index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>HOME</p>
-  </a>
   <a href="index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
     <p>LIST BIKES</p>
   </a>
@@ -155,7 +152,7 @@ img {
         <div class="column">
           <canvas id="canvas"></canvas>
           <br/>
-          For Mobile dApp
+          Scan with Mobile dApp
         </div>
       </div>
       <p>Date Created: {{ bikeDateCreated }}</p>
