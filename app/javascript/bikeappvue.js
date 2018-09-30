@@ -11,6 +11,8 @@ Vue.use(VModal, { dynamic: true })
 var BikeDeed = contract(require('../../build/contracts/BikeDeed.json'));
 var Buffer = require('buffer/').Buffer;
 
+const BIKE_DEED_BIKES_URL = "https://bikedeed.io/bikes/";
+
 window.app = app;
 
 // register modal component
@@ -317,7 +319,7 @@ var app = new Vue({
         errorCorrectionLevel: 'H'
       };
       var canvas = document.getElementById('canvas');
-      QRCode.toCanvas(canvas, "https://bikedeed.io/bikes/" + this.bikeId, opts, function (error) {
+      QRCode.toCanvas(canvas, BIKE_DEED_BIKES_URL + this.bikeId, opts, function (error) {
         if (error) {
           console.error(error);
         }
@@ -386,9 +388,10 @@ var app = new Vue({
              if(res instanceof Error) {
                alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
              } else {
-               var s1 = res.substr(0, id.length - 1);
-               var s2 = res.substr(id.length - 1);
-               if (s1 != "https://bikedeed.io/bikes/" ) {
+               var len = BIKE_DEED_BIKES_URL.length;
+               var s1 = res.substr(0, len);
+               var s2 = res.substr(len);
+               if (s1 != BIKE_DEED_BIKES_URL ) {
                  alert("This is not a BikeDeed QR Code.");
                  reject(new Exception("This is not a Bikeed QR Code."));
                }
