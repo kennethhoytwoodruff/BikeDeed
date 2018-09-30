@@ -8,7 +8,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="modal.css">
 <style>
-body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+body { padding: 10px; }
+h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 app {
     position: relative;
 }
@@ -96,15 +97,12 @@ img {
 
 <div id="app" v-cloak>
 <nav class="w3-topnav w3-small w3-center">
-  <a href="../index.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>HOME</p>
-  </a>
   <a href="register.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-    <p>ADD A BIKE</p>
+    ADD A BIKE
   </a>
   <div v-if="isMobile()">
     <a href="proveit.html" class="w3-bar-item w3-button w3-padding-small w3-hover-black">
-      <p>SCAN A BIKE</p>
+      SCAN A BIKE
     </a>
   </div>
 </nav>

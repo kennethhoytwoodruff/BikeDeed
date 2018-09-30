@@ -238,6 +238,8 @@ var app = new Vue({
               owner: bikeOwner,
               bikeUrl: url
             }
+            // HACK ALERT
+            bike.bikeUrl = "https://bikedeed.io/ipfs/" + bike.ipfsHash;
             if (web3.isAddress(bikeOwner)) {
               this.allbikes.push(bike);
             }
@@ -543,7 +545,7 @@ var app = new Vue({
              return;
            }
            this.bikeIpfsHash = result[0].hash;
-           this.bikeUrl = "https://ipfs.io/ipfs/" + this.bikeIpfsHash;
+           this.bikeUrl = "https://bikedeed.io/ipfs/" + this.bikeIpfsHash;
            this.showUploadSpinner = false;
            this.pooFileLoaded = true;
         });
