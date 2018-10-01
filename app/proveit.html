@@ -83,7 +83,7 @@ img {
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="w3-bar-item w3-button w3-padding-small w3-hover-black" @click="$emit('close')">
+              <button class="button-modal-default" @click="$emit('close')">
                 Close Window
               </button>
             </slot>
@@ -179,8 +179,8 @@ img {
       <p>Date Created: {{ bikeDateCreated }}</p>
       <p>{{ processingMessage }} <i v-show="showSpinner" class="fa fa-spinner fa-spin" style="font-size:24px;color:white"></i></p>
       <input v-show="displayRegistrationComponents" type="text" id="newOwnerAddress" v-model="newOwnerAddress" :placeholder="bikeOwner">
-      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="transferOwnership()">Transfer Bike Deed</button></p>
-      <button v-show="displayRegistrationComponents" type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="deleteBikeDeed()">Delete Bike Deed</button></p>
+      <button v-show="displayRegistrationComponents" type="button" class="button-modal-default" v-on:click="transferOwnership()">Transfer Bike Deed</button></p>
+      <button v-show="displayRegistrationComponents" type="button" class="button-modal-default" v-on:click="deleteBikeDeed()">Delete Bike Deed</button></p>
     </span>
 
 

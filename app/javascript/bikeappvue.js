@@ -11,7 +11,8 @@ Vue.use(VModal, { dynamic: true })
 var BikeDeed = contract(require('../../build/contracts/BikeDeed.json'));
 var Buffer = require('buffer/').Buffer;
 
-const BIKE_DEED_BIKES_URL = "https://bikedeed.io/bikes/";
+const BIKEDEED_BIKES_URL = "https://bikedeed.io/bikes/";
+const BIKEDEED_IPFS_URL = "https://bikedeed.io/ipfs/";
 
 window.app = app;
 
@@ -205,6 +206,43 @@ var app = new Vue({
           }
           return false;
         },
+        loadBikeWithId: function(deedId) {
+        let self = this;
+        const loadBike = async () => {
+          let deed = await BikeDeed.at(this.contractAddress);
+          const FIELD_NAME  = 0
+          const FIELD_SERIAL_NUMBER = 1
+          const FIELD_MANUFACTURER = 2
+          const FIELD_IPFS_HASH = 3
+          const FIELD_DATE_CREATED = 4
+          const FIELD_DATE_DELETED = 5
+
+          var bikeDeed = await deed.deeds(deedId);
+          try {
+            var bikeOwner = await deed.ownerOf(deedId);
+          } catch(error) {
+            // probably a deleted token and therefore has no owner.
+            console.log(error);
+            return error;
+          }
+          var url = await deed.deedUri(deedId);
+          const bike = {
+            id: deedId,
+            name:  web3.toAscii(bikeDeed[FIELD_NAME]),
+            serialNumber: web3.toAscii(bikeDeed[FIELD_SERIAL_NUMBER]),
+            manufacturer: web3.toAscii(bikeDeed[FIELD_MANUFACTURER]).replace(/\u0000/g, ''),
+            ipfsHash: bikeDeed[FIELD_IPFS_HASH],
+            dateCreated: bikeDeed[FIELD_DATE_CREATED],
+            dateDeleted: bikeDeed[FIELD_DATE_DELETED],
+            owner: bikeOwner,
+            bikeUrl: url
+          }
+          // HACK ALERT
+          bike.bikeUrl = BIKEDEED_IPFS_URL + bike.ipfsHash;
+        }
+        loadBike(deedId);
+        return bike;
+      },
       loadAllBikes: function() {
         let self = this;
         this.allbikes.length=0;
@@ -241,7 +279,7 @@ var app = new Vue({
               bikeUrl: url
             }
             // HACK ALERT
-            bike.bikeUrl = "https://bikedeed.io/ipfs/" + bike.ipfsHash;
+            bike.bikeUrl = BIKEDEED_IPFS_URL + bike.ipfsHash;
             if (web3.isAddress(bikeOwner)) {
               this.allbikes.push(bike);
             }
@@ -319,7 +357,7 @@ var app = new Vue({
         errorCorrectionLevel: 'H'
       };
       var canvas = document.getElementById('canvas');
-      QRCode.toCanvas(canvas, BIKE_DEED_BIKES_URL + this.bikeId, opts, function (error) {
+      QRCode.toCanvas(canvas, BIKEDEED_BIKES_URL + this.bikeId, opts, function (error) {
         if (error) {
           console.error(error);
         }
@@ -388,10 +426,10 @@ var app = new Vue({
              if(res instanceof Error) {
                alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
              } else {
-               var len = BIKE_DEED_BIKES_URL.length;
+               var len = BIKEDEED_BIKES_URL.length;
                var s1 = res.substr(0, len);
                var s2 = res.substr(len);
-               if (s1 != BIKE_DEED_BIKES_URL ) {
+               if (s1 != BIKEDEED_BIKES_URL ) {
                  alert("This is not a BikeDeed QR Code.");
                  reject(new Exception("This is not a Bikeed QR Code."));
                }
@@ -415,14 +453,14 @@ var app = new Vue({
      verifyOwnership: function(deedId) {
         var self = this;
         this.initAccounts();
-        for (let index = 0; index < this.allbikes.length; ++index) {
-          const bike = this.allbikes[index];
-          if (bike.id == deedId) {
-            this.showBikeDetails(bike);
-            return;
-          }
+        var bike;
+        try {
+          bike = this.loadBikeWithId(deedId);
         }
-        alert("No bike found for deed ID: " + deedId);
+        catch(error) {
+          alert(error + ": No bike found for deed ID: " + deedId);
+        }
+        this.showBikeDetails(bike);
      },
      transferOwnership: function() {
        const transfer = async () => {
@@ -492,7 +530,6 @@ var app = new Vue({
        // Not sure why this has to be done.
        this.initAccounts();
 
-
        if (!registerBikeOnBlockchain()) {
          return;
        }
@@ -548,7 +585,7 @@ var app = new Vue({
              return;
            }
            this.bikeIpfsHash = result[0].hash;
-           this.bikeUrl = "https://bikedeed.io/ipfs/" + this.bikeIpfsHash;
+           this.bikeUrl = BIKEDEED_IPFS_URL + this.bikeIpfsHash;
            this.showUploadSpinner = false;
            this.pooFileLoaded = true;
         });
