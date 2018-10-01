@@ -239,9 +239,9 @@ var app = new Vue({
           }
           // HACK ALERT
           bike.bikeUrl = BIKEDEED_IPFS_URL + bike.ipfsHash;
+          return bike;
         }
-        loadBike(deedId);
-        return bike;
+        return loadBike(deedId);
       },
       loadAllBikes: function() {
         let self = this;
@@ -453,7 +453,7 @@ var app = new Vue({
      verifyOwnership: function(deedId) {
         var self = this;
         this.initAccounts();
-        var bike;
+        let bike;
         try {
           bike = this.loadBikeWithId(deedId);
         }
