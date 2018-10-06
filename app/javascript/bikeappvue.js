@@ -206,7 +206,7 @@ var app = new Vue({
           }
           return false;
         },
-        loadBikeWithId: function(deedId) {
+        loadBikeWithId: async function(deedId) {
         let self = this;
         var myBike;
         const loadBike = async () => {
@@ -242,7 +242,7 @@ var app = new Vue({
           bike.bikeUrl = BIKEDEED_IPFS_URL + bike.ipfsHash;
           myBike = bike;
         }
-        await loadBike(deedId);
+        loadBike(deedId);
       },
       loadAllBikes: function() {
         let self = this;
@@ -451,12 +451,12 @@ var app = new Vue({
 
        handleQRCode();
      },
-     verifyOwnership: function(deedId) {
+     verifyOwnership: async function(deedId) {
         var self = this;
         this.initAccounts();
         let bike;
         try {
-          bike = this.loadBikeWithId(deedId);
+          bike = await this.loadBikeWithId(deedId);
         }
         catch(error) {
           alert(error + ": No bike found for deed ID: " + deedId);
