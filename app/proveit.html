@@ -132,11 +132,15 @@ img {
          tabindex=-1>
       </label>
     </div>
-    <div v-else>
+    <div v-else class="w3-text-grey">
+         The ability to scan QR Codes is limited to Mobile devices. <br>
+         Install either the <a href="https://trustwalletapp.com">Trust</a> or <a href="https://www.cipherbrowser.com">Cipher</a> Mobile Apps and use it to open "http://bikedeed.io/app".
+<!--
       <label class=qrcode-text-input>
          <input type="text" id="bikeId" v-model="bikeId" :placeholder="bikeId">
          <button type="button" class="w3-padding-small w3-button w3-hover-black" v-on:click="verifyOwnership()">Verify Ownership</button></p>
       </label>
+-->
     </div>
   </div>
 

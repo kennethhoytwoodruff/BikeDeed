@@ -208,6 +208,7 @@ var app = new Vue({
         },
         loadBikeWithId: function(deedId) {
         let self = this;
+        var myBike;
         const loadBike = async () => {
           let deed = await BikeDeed.at(this.contractAddress);
           const FIELD_NAME  = 0
@@ -239,9 +240,9 @@ var app = new Vue({
           }
           // HACK ALERT
           bike.bikeUrl = BIKEDEED_IPFS_URL + bike.ipfsHash;
-          return bike;
+          myBike = bike;
         }
-        return loadBike(deedId);
+        await loadBike(deedId);
       },
       loadAllBikes: function() {
         let self = this;
