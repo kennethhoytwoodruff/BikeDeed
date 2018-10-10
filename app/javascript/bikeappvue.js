@@ -208,7 +208,7 @@ var app = new Vue({
         },
         loadBikeWithId: async function(deedId) {
         let self = this;
-        const loadBike = async () => {
+        const loadBike = async (deedId) => {
           let deed = await BikeDeed.at(this.contractAddress);
           const FIELD_NAME  = 0
           const FIELD_SERIAL_NUMBER = 1
@@ -241,8 +241,7 @@ var app = new Vue({
           bike.bikeUrl = BIKEDEED_IPFS_URL + bike.ipfsHash;
           this.singleBike = bike;
         }
-        loadBike(deedId);
-        return this.singleBike;
+        await loadBike(deedId);
       },
       loadAllBikes: function() {
         let self = this;
@@ -456,7 +455,12 @@ var app = new Vue({
         this.initAccounts();
         try {
           let bike = await this.loadBikeWithId(deedId);
-          this.showBikeDetails(bike);
+          if (this.singleBike) {
+	    this.showBikeDetails(this.singleBike);
+          }
+          else {
+            alert("Bike with deedid " + deedId + " not found");
+          }
         }
         catch(error) {
           alert(error + ": No bike found for deed ID: " + deedId);
